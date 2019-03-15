@@ -1,0 +1,42 @@
+#!/usr/local/bin/zsh
+# Check for identical files
+# Usage: ./findDupes.sh <dir>
+##
+
+[[ ! -d $1 ]] && { print "$1 is not a valid directory"; exit 115 }
+
+zmodload zsh/stat
+
+# Avoid associative array since it will be easier to iterate later
+typeset -a FILES SIZES DUPES HITS
+integer counter len
+
+FILES=($1/**/*(.N))
+len=${#FILES}
+[[ $len == 0 ]] && { print "Empty directory"; exit 115 }
+
+stat -A SIZES +size $FILES
+[[ ${#SIZES} != ${#FILES} ]] && { print "Error, array mismatch"; exit 115 }
+
+for ((i = 1; i < $len; i++)); do
+    [[ -n $DUPES[(r)$FILES[$i]] ]] && continue
+
+    for ((j = i + 1; j <= $len; j++)); do
+        if [[ $SIZES[$i] == $SIZES[$j] ]]; then
+            # `sysread` quicker for txt files; h/o `diff` better with binaries
+            if diff -q $FILES[$i] $FILES[$j] 1>/dev/null; then
+                HITS+=($FILES[$j])
+                ((counter++))
+            fi
+        fi
+    done
+
+    if [[ -n $HITS ]]; then
+        print "$FILES[$i] $HITS"
+        DUPES+=($HITS)
+        unset HITS
+        ((counter++))
+    fi
+done
+
+print "Processed: $len file(s), $counter duplicate(s)"

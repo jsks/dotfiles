@@ -1,0 +1,29 @@
+! -------------------------------------------------
+! vim:nu:ai:si:et:ts=4:sw=4:ft=xdefaults:
+! -------------------------------------------------
+
+!black
+ *color0:  #171D28
+ *color8:  #403639
+!red
+ *color1:  #CA4501
+ *color9:  #EC5801
+!green
+ *color2:  #5F0505
+ *color10: #C42A2A
+!yellow
+ *color3:  #EC950C
+ *color11: #FECD7F
+!blue
+ *color4:  #3F0A03
+ *color12: #FECD7F
+!magenta
+ *color5:  #D83018
+ *color13: #F07848
+!cyan
+ *color6:  #CD2913
+ *color14: #FFB400
+!white
+ *color7:  #FFEEEE
+ *color15: #FFFFFF
+

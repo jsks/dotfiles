@@ -1,0 +1,98 @@
+# For the benefit of emacs users: -*- shell-script -*-
+###########################
+# xbindkeys configuration #
+###########################
+#
+# Version: 1.8.4
+#
+# If you edit this file, do not forget to uncomment any lines
+# that you change.
+# The pound(#) symbol may be used anywhere for comments.
+#
+# To specify a key, you can use 'xbindkeys --key' or
+# 'xbindkeys --multikey' and put one of the two lines in this file.
+#
+# The format of a command line is:
+#    "command to start"
+#       associated key
+#
+#
+# A list of keys is in /usr/include/X11/keysym.h and in
+# /usr/include/X11/keysymdef.h
+# The XK_ is not needed.
+#
+# List of modifier:
+#   Release, Control, Shift, Mod1 (Alt), Mod2 (NumLock),
+#   Mod3 (CapsLock), Mod4, Mod5 (Scroll).
+#
+
+# The release modifier is not a standard X modifier, but you can
+# use it if you want to catch release events instead of press events
+
+# By defaults, xbindkeys does not pay attention with the modifiers
+# NumLock, CapsLock and ScrollLock.
+# Uncomment the lines above if you want to pay attention to them.
+
+#keystate_numlock = enable
+#keystate_capslock = enable
+#keystate_scrolllock= enable
+
+# Examples of commands:
+
+"xbindkeys_show" 
+  control+shift + q
+
+"syntoggle"
+  m:0x0 + c:191
+  XF86Tools
+
+"xautolock -locknow"
+  m:0x0 + c:63
+  KP_Multiply
+
+"xautolock -toggle && dpms-toggle.sh && notify-send 'Toggle Xautolock'"
+  m:0x0 + c:160
+  XF86ScreenSaver
+
+"mpk toggle"
+  XF86AudioPlay
+
+"mpk next"
+  m:0x0 + c:171
+  XF86AudioNext
+
+"mpk previous"
+  m:0x0 + c:173
+  XF86AudioPrev
+
+"mpk stop"
+  m:0x0 + c:174
+  XF86AudioStop
+
+"mpk -h 192.168.1.2 -p 6600 toggle"
+  XF86AudioPlay + Shift
+
+"mpk -h 192.168.1.2 -p 6600 next"
+  XF86AudioNext + Shift
+
+"mpk -h 192.168.1.2 -p 6600 previous"
+  XF86AudioPrev + Shift
+
+"mpk -h 192.168.1.2 -p 6600 stop"
+  XF86AudioStop + Shift
+
+"change_vol -i 5"
+  m:0x0 + c:123
+  XF86AudioRaiseVolume
+
+"change_vol -d 5"
+  m:0x0 + c:122
+  XF86AudioLowerVolume
+
+"change_vol -t"
+  m:0x0 + c:121
+  XF86AudioMute
+
+##################################
+# End of xbindkeys configuration #
+##################################

@@ -1,0 +1,244 @@
+#!/bin/zsh
+# mpd_hooks -> Execute commands on MPD events
+#
+# Usage:
+#   $ mpd_hooks --help
+#
+# Argument Syntax:
+#   Specify each subsystem to watch followed by a colon, ':',
+#   and then a comma deliminated list of commands. Subsystem
+#   lists can be chained together either by a semicolon, ';',
+#   or a newline and must be surrounded by quotation marks.
+#
+#       Ex:
+#           $ mpd_hooks "player: echo foo,echo bar; mixer: echo no"
+#
+#   All hooks will be run in the background, meaning that
+#   mpd_hooks will not have access to their exit status.
+#
+# Writing Scripts as Hooks:
+#   Depending on the event, the mpd server will
+#   be queried and the resulting info will be
+#   available to hooks through the exported string
+#   variable, `args`.
+#
+#       Event       Query
+#       -----       -----
+#       database    stats
+#       player      currentsong, status
+#       mixer       status
+#       options     status
+
+
+zmodload zsh/datetime
+zmodload zsh/net/tcp
+zmodload zsh/system
+
+setopt local_options
+
+MPD_HOST="localhost"
+MPD_PORT=6600
+MPD_MIN_VERSION=0.14
+
+typeset -a EVENTS SUBS BUF
+typeset -A HOOKS OPTS
+SUBS=( database
+       update
+       stored_playlist
+       playlist
+       player
+       mixer
+       output
+       options
+       sticker
+       subscription
+       message )
+
+integer netfd logfd
+exec {netfd}>/dev/null {logfd}>/dev/null
+
+function error() {
+    print "[$(strftime "%d %b %H:%M:%S" $EPOCHSECONDS)](pid: $sysparams[pid]) ERROR: $*" >&2 >&$logfd
+
+    exit 115
+}
+
+function log_f() {
+    print "[$(strftime "%a %d %b, %H:%M:%S" $EPOCHSECONDS)](pid: $sysparams[pid]) $*" >&$logfd
+}
+
+function help() {
+cat <<EOF
+USAGE: mpd_hooks [OPTIONS] [SUBSYSTEM1]:[CMD1],[CMD2],...;[SUBSYSTEM2]...
+
+Options:
+    --verbose | -v  Redirect logging to stdout
+    --log     | -l  Log to given file
+    --help    | -h  Learn the secrets to life
+
+Examples:
+    $ ./mpd_hooks "database:notify-send Hello World\!;player:echo Hello World\!"
+
+    # Alternatively, save the cli args to a file and output to stdin
+    $ echo "database:notify-send Hello World\!,echo Foo\nplayer:echo Bar" > hooks
+    $ ./mpd_hooks "\$(<hooks)"
+
+Available Subsystems:
+$(for i in $SUBS; printf "%*s\n" ${#i}+4 $i)
+EOF
+
+exit 0
+}
+
+function connect_mpd() {
+    local line
+    local -i interval
+
+    repeat 10; do
+        ztcp -c
+
+        if ztcp $MPD_HOST $MPD_PORT 2>/dev/null; then
+            netfd=$REPLY
+
+            read -t 3 -u $netfd line
+            [[ $line == "OK MPD"*  && ${line[(w)3]} > $MPD_MIN_VERSION ]] && return 0
+        fi
+
+        sleep $interval
+
+        log_f "Failed, re-trying connection"
+        ((interval+=5))
+    done
+
+    error "Unable to connect to $MPD_HOST:$MPD_PORT"
+}
+
+function write_mpd() {
+    print -u $netfd "$*" 2>/dev/null || return 113
+}
+
+function read_mpd() {
+    unset BUF; typeset -ga BUF
+    local line tmp
+
+    while :; do
+        sysread -i $netfd tmp
+        [[ $? == [25] ]] && return 113
+
+        BUF+=(${(f@)tmp})
+
+        if [[ $BUF[-1] == "OK" ]]; then
+            return 0
+        elif [[ -n ${(M)BUF:#ACK*} ]]; then
+            log_f "Server Error -> ${(M)BUF:#ACK*}"
+            return 1
+        fi
+    done
+}
+
+function mpd_currentsong() {
+    write_mpd "currentsong"
+    read_mpd
+}
+
+function mpd_stats() {
+    write_mpd "stats"
+    read_mpd
+}
+
+function mpd_status() {
+    write_mpd "status"
+    read_mpd
+}
+
+function mpd_idle() {
+    unset EVENTS; typeset -ga EVENTS
+    local i
+
+    setopt err_return
+
+    write_mpd "idle ${(k)HOOKS}"
+    read_mpd
+
+    if [[ ${BUF[1]} == "changed:"* ]]; then
+        for i in ${BUF[1][(w)2,-1]}; EVENTS+=(${=i})
+    fi
+}
+
+function run_hooks() {
+    local i
+    local -x args
+
+    setopt err_return
+
+    case $1 in
+        ("database")
+            mpd_stats
+            args+=${(F)BUF}$'\n';|
+        ("player"|"mixer"|"options")
+            mpd_status
+            args+=${(F)BUF}$'\n';|
+        ("player")
+            mpd_currentsong
+            args+=${(F)BUF}$'\n';;
+    esac
+
+    for i in ${(s.,.)HOOKS[$1]}; do
+        if ! which ${=~i[(w)1]} &>/dev/null; then
+            log_f "Invalid hook: $i"
+            continue
+        fi
+
+        ${=~i} &
+        log_f "Ran hook $i"
+    done
+}
+
+### Main
+trap "write_mpd close; ztcp -c; exit" TERM INT KILL; trap '' PIPE
+
+zparseopts -D -A OPTS -help -verbose -log: h v l: 2>/dev/null || error "Failed to parse options"
+for i in ${(k)OPTS}; do
+    case ${(L)i} in
+        ("--help"|"-h")
+            help;;
+        ("--verbose"|"-v")
+            unsetopt multios
+            exec {logfd}>&1;;
+        ("--log"|"-l")
+            exec {logfd}>>$OPTS[$i];;
+    esac
+done
+
+[[ -z $* ]] && error "No hooks given"
+
+for i in ${(s.;.)@//$'\n'/;}; do
+    if [[ -n ${(M)SUBS:#${(z)i[(ws.:.)1]}} ]]; then
+        HOOKS[${(z)i[(ws.:.)1]}]="${i[(ws.:.)2,-1]}"
+    else
+        error "Unrecognized mpd subsystem: ${(z)i[(ws.:.)1]}"
+    fi
+done
+
+log_f "Connecting to $MPD_HOST:$MPD_PORT"
+connect_mpd
+
+log_f "Subsystems: ${(k)HOOKS}"
+
+while :; do
+    if [[ $last_status == 113 ]]; then
+        log_f "Broken pipe, reconnecting to $MPD_HOST:$MPD_PORT"
+        connect_mpd
+    fi
+
+    mpd_idle
+    [[ ${last_status::=$?} != 0 ]] && continue
+
+    wait
+   
+    for i in $EVENTS; do
+        log_f "Subsystem hit: $i"
+        run_hooks $i
+        [[ ${last_status::=$?} != 0 ]] && continue
+    done
+done

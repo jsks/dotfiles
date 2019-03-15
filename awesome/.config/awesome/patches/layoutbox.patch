@@ -1,0 +1,29 @@
+--- layoutbox.lua	2013-04-13 18:27:58.501835137 -0400
++++ layoutbox.lua.1	2013-04-13 18:27:45.568501193 -0400
+@@ -10,7 +10,7 @@
+ local layout = require("awful.layout")
+ local tag = require("awful.tag")
+ local beautiful = require("beautiful")
+-local imagebox = require("wibox.widget.imagebox")
++local textbox = require("wibox.widget.textbox")
+ 
+ --- Layoutbox widget.
+ -- awful.widget.layoutbox
+@@ -18,7 +18,7 @@
+ 
+ local function update(w, screen)
+     local layout = layout.getname(layout.get(screen))
+-    w:set_image(layout and beautiful["layout_" .. layout])
++    w:set_markup(beautiful["layout_" .. layout])
+ end
+ 
+ --- Create a layoutbox widget. It draws a picture with the current layout
+@@ -27,7 +27,7 @@
+ -- @return An imagebox widget configured as a layoutbox.
+ function layoutbox.new(screen)
+     local screen = screen or 1
+-    local w = imagebox()
++    local w = textbox()
+     update(w, screen)
+ 
+     local function update_on_tag_selection(t)

@@ -1,0 +1,30 @@
+! -------------------------------------------------
+! Author: Barrucadu
+! vim:nu:ai:si:et:ts=4:sw=4:ft=xdefaults:
+! -------------------------------------------------
+
+!black
+ *color0:  #1C1C20
+ *color8: #4d4d4d
+!red
+ *color1: #CE5C00
+ *color9: #F57900
+!green
+ *color2: #B7CE42
+ *color10: #BDE077
+!yellow
+ *color3: #B88B10
+ *color11: #FFC135
+!blue
+ *color4: #66AABB
+ *color12: #AACCBB
+!magenta
+ *color5: #B7416E
+ *color13: #BB4466
+!cyan
+ *color6: #5E7175
+ *color14: #A3BABF
+!white
+ *color7: #D6D8D9
+ *color15: #6C887A
+

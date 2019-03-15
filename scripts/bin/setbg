@@ -1,0 +1,71 @@
+#!/bin/zsh
+
+WALLARGS="--bg-scale"
+BATFILE="/sys/class/power_supply/BAT0/status"
+
+set_wall() {
+    feh $1 $@[2,-1]
+}
+
+timer() {
+    if [[ ! -f $BATFILE ]] || ! grep -q Discharging $BATFILE; then
+        sleep ${1}m 
+    else
+        sleep ${2:-60}m
+    fi
+}
+
+help() {
+cat << EOF
+setbg: Simple wrapper to set the wallpaper 
+    
+Usage: setbg [OPTIONS] [ARGUMENT] <file>
+    
+Options:
+    -s : Set a specified image to scale as wallpaper.
+    -r : Set a random image as the wallpaper. Takes a directory as an argument.
+    -w : Optional timer to continue setting a random image. Argument is in minutes. Requires "-r".
+    -b : Optional argument to adjust timer when on battery (default value is 60 minutes). Requires "-w".
+    -t : Tile given image. Works with both "-s" and "-r".
+    -h : View help.
+   
+EOF
+}
+
+usage() {
+    echo "Usage: setbg [OPTION] [ARGUMENT] <file>"
+}
+
+typeset -A OPTS
+zparseopts -D -K -A OPTS -- b: w: r: s: t=TILE h=HELP
+
+[ $HELP ] && { help; exit }
+[ $TILE ] && WALLARGS="--bg-tile"
+
+if [[ -n $OPTS[-r] ]]; then
+    [[ -d $OPTS[-r] ]] || { echo "Not a valid directory." && exit 101 }
+
+    for i in $OPTS[-r]/*; do
+        [[ "$i" =~ .png\|.jpg\$ ]] && files+=("$i")
+    done
+
+    if [[ -n $OPTS[-w] && $OPTS[-w] -gt 0 ]]; then
+        while true; do
+            # feh will set diff wallpapers on each screen if multiple files provided as arg
+            unset selection; local -a selection
+            for i in {1..$(xrandr --query | grep -c "\bconnected")}; selection+=($files[$RANDOM%$#files+1])
+
+            set_wall $WALLARGS $selection
+            timer $OPTS[-w] $OPTS[-b]
+        done
+    else
+        set_wall $WALLARGS $files[$RANDOM%$#files+1] && exit
+    fi
+elif [[ -n $OPTS[-s] ]]; then
+    for i in ${(z)OPTS[-s]}; [[ -f $i ]] || { echo "Not a valid file." && exit 101 }
+
+    set_wall $WALLARGS ${(z)OPTS[-s]}
+else
+    usage
+    exit 101
+fi

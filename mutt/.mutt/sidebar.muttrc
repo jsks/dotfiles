@@ -1,0 +1,11 @@
+set sidebar_visible	= yes
+set sidebar_next_new_wrap = yes
+set mail_check_stats = yes
+set sidebar_format  = '%B%* %N'
+mailboxes +vdem/Inbox +gmail/Inbox
+
+color sidebar_new brightyellow default
+
+bind index,pager \CN	sidebar-next
+bind index,pager \CP	sidebar-prev
+bind index,pager \CO	sidebar-open

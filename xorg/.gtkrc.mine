@@ -1,0 +1,2 @@
+include '/home/cloud/.themes/Dyne/gtk-2.0/gtkrc'
+gtk-icon-theme-name = "ALLBLACK"

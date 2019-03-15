@@ -1,0 +1,81 @@
+#!/bin/zsh
+# Original bash script by @gnachman github.com/gnachman/iterm2/tests/imgcat
+# - @jsks: ported to zsh and exposed some extra options
+###
+
+setopt err_return extended_glob
+
+function help() {
+<<EOF
+Usage: zimgcat [OPTIONS] <file>
+
+zimgcat - zsh imgcat clone
+:: Displays images in iterm2
+
+Options
+    --width                Specify width as px, %, or 'auto'
+    --height               Specify height as px, %, or 'auto'
+    --preserveAspectRatio  Whether to respect image's aspect ratio.
+                           Set to 0 to disable (Default: 1).
+
+If no file is provided, zimgcat will attempt to read from stdin.
+
+See https://www.iterm2.com/images.html for more details.
+EOF
+
+exit
+}
+
+function error() {
+    print "$*" >&2
+    exit 113
+}
+
+function print_image() {
+    if [[ -n $TMUX ]]; then
+        printf '\033Ptmux;\033\033]'
+    else
+        printf '\033]'
+    fi
+
+    printf '1337;File=inline=1'
+    for k in ${(k)OPTS}; printf ';%s=%s' ${k[3,-1]} $OPTS[$k]
+
+    printf ':%s' $1
+
+    if [[ -n $TMUX ]]; then
+        clear
+        printf '\a\033\\'
+        printf '\n'
+    else
+        printf '\a\n'
+    fi
+}
+
+typeset -A OPTS
+zparseopts -A OPTS -D -E -help -width: -height: -preserveAspectRatio:
+
+for i in ${(kM)OPTS}; do
+    case $i in
+        ("--help")
+            help;;
+        ("--width"|"--height")
+            print $OPTS[$i]
+            [[ $OPTS[$i] == ([0-9]##(px|\%)#|auto) ]] || error "Invalid argument to \`$i\`";;
+        ("--preserveAspectRatio")
+            [[ $OPTS[$i] == [01] ]] || error "Invalid argument to \`$i\`";;
+    esac
+done
+
+if [[ -n $1 ]]; then
+    [[ ! -f $1 ]] && error "No such file: $1"
+
+    OPTS[-name]=$(base64 <<< $1)
+    BUF=$(base64 $1)
+else
+    [[ -t 0 ]] && error "Unable to read from stdin"
+
+    BUF=$(<&0 | base64)
+fi
+
+print_image $BUF

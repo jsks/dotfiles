@@ -1,0 +1,30 @@
+! -------------------------------------------------
+! Author: sm4tik
+! vim:nu:ai:si:et:ts=4:sw=4:ft=xdefaults:
+! -------------------------------------------------
+
+!black
+ *color0:  #101309
+ *color8:  #222815
+!red
+ *color1:  #C8611F
+ *color9:  #ffb73e
+!green
+ *color2:  #546B28 
+ *color10: #9fca4e
+!yellow
+ *color3:  #DCA53E
+ *color11: #ffff77
+!blue
+ *color4:  #235967
+ *color12: #45a9c2
+!magenta
+ *color5:  #914C5A
+ *color13: #ff91aa
+!cyan
+ *color6:  #4F9E4E
+ *color14: #96ff94
+!white
+ *color7:  #9DA560
+ *color15: #ffffd8
+

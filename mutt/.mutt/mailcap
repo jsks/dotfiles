@@ -1,0 +1,18 @@
+image/jpeg; mutt-attachments.sh %s;
+image/gif; mutt-attachments.sh %s;
+image/png; mutt-attachments.sh %s;
+
+application/pdf; mutt-attachments.sh %s;
+
+application/x-msexcel; mutt-attachments.sh %s
+application/ms-exc; mutt-attachments.sh %s
+application/excel; mutt-attachments.sh %s
+application/msexcel; mutt-attachments.sh %s
+application/vnd.ms-exc; mutt-attachments.sh %s
+application/vnd.ms-excel; mutt-attachments.sh %s
+application/msword; mutt-attachments.sh %s
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; mutt-attachments.sh %s
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; mutt-attachments.sh %s
+
+text/html; mutt-attachments.sh %s html; needsterminal;
+text/html; w3m -dump -I %{charset} -T text/html; copiousoutput;

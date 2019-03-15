@@ -1,0 +1,43 @@
+#!/bin/zsh
+
+typeset -A OPTIONS
+OPTIONS[-h]="localhost"
+OPTIONS[-p]="6600"
+
+zparseopts -D -K -A OPTIONS h: p:
+
+MPDHOST=$OPTIONS[-h]
+MPDPORT=$OPTIONS[-p]
+
+mpdfunc() {
+	echo "$1\nclose" | netcat $MPDHOST $MPDPORT 
+}
+
+toggle() {
+	mpdfunc "pause" > /dev/null || mpdfunc "play" > /dev/null
+}
+
+status() {
+	echo `mpdfunc "status" | grep state | sed 's/state://g'`
+}
+
+error() {
+	echo "Unknown command: $*"
+}
+
+if [ -n "$1" ]; then
+	case "$1" in
+        "next" | "previous")
+            mpdfunc $* > /dev/null;;
+        "stop")
+            mpdfunc $* > /dev/null;;
+        "toggle")
+            toggle;;
+        "status")
+            status;;
+        *)
+            error $*
+    esac
+else
+	echo "No argument given, exiting."
+fi

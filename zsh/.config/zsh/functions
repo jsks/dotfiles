@@ -1,0 +1,119 @@
+# -*- mode: sh -*-
+
+function check {
+    if ! which $1 >/dev/null; then
+        # Be really annoying about htis
+        print "Missing cli tool: $1"
+        return 1
+    fi
+}
+
+function o {
+    if [[ $OSTYPE == darwin* ]] && whence open >/dev/null; then
+        open $@[2,-1]
+    else
+        $* &!
+    fi
+}
+
+function extract {
+    case $1 in
+        *.tar.bz2)  tar xvjf $1;;
+        *.tar.gz)   tar xvzf $1;;
+        *.tar.xz)   tar xvJf $1;;
+        *.xz)       unxz $1;;
+        *.bz2)      bunzip2 $1;;
+        *.gz)       gunzip $1;;
+        *.tar)      tar xvf $1;;
+        *.tbz2)     tar xvjf $1;;
+        *.tgz)      tar xvzf $1;;
+        *.Z)        uncompress $1;;
+        *.zip)      unzip $1;;
+        *.rar)      unrar e $1;;
+        *)          echo "Cannot extract $1."
+    esac
+}
+
+function gitignore {
+    setopt local_options hist_subst_pattern
+    local git_dir=$(git rev-parse --show-toplevel)
+
+    [[ -d $git_dir ]] && print ${(F)@:a:s/$git_dir\///} >> $git_dir/.gitignore
+}
+
+function qsync {
+    git add -A
+    git commit -m "Sync"
+
+    git push
+}
+
+function rr {
+    $* &!
+}
+
+# Because why not? Need to test more, doesn't work with multiple cmds stringed
+# together
+function spin {
+    setopt local_options
+    unsetopt monitor
+
+    local -a spinner
+    local pid
+
+    spinner=('-' '\' '|' '/')
+
+    print -n "Executing command...."
+    coproc $*; pid=$!
+
+    while :; do
+        for i in $spinner; do
+            print -n "\\$i\b"
+            sleep 0.05
+
+            if ! kill -0 $pid 2>/dev/null; then
+                break 2
+            fi
+        done
+    done
+
+    print "Done\!"
+
+    <&p
+}
+
+function timeout {
+    local pid1 pid2
+
+    function TRAPCHLD() {
+        kill $pid1 $pid2 2>/dev/null
+    }
+
+    [[ $2 != <-> ]] && { print "USAGE: timeout \'<command>\' [seconds]"; return 1 }
+
+    eval $1 &; pid1=$!
+    sleep $2 &; pid2=$!
+
+    wait $pid1 2>/dev/null
+    kill $pid2 2>/dev/null
+}
+
+function wordcount {
+    print $(( $(pdftotext $1 - | wc -w) - 1 ))
+}
+
+function xhead {
+    xsv slice -l ${2:-10} -- $1 | xsv table
+}
+
+function xhead2 {
+    xsv slice -l ${2:-10} -d ';' --  $1 | xsv table
+}
+
+function ww {
+    curl "wttr.in/${1:-Göteborg}?format=3"
+}
+
+function wwl {
+    curl "wttr.in/${1:-Göteborg}"
+}

@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+case $OSTYPE in
+    (linux*)
+        notify-send $1 "${(j. .)@[2,-1]}";;
+    (darwin*)
+        terminal-notifier -title $1 -group $1 -message "${(j. .)@[2,-1]}";;
+esac
