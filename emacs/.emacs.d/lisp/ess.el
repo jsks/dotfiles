@@ -21,8 +21,8 @@
    whilst still preserving focus."
   (interactive)
   (split-window nil nil 'left)
-  (setq-local mode-line-format nil)
   (call-interactively 'R)
+  (setq-local mode-line-format nil)
   (other-window -1))
 
 (use-package ess-site
