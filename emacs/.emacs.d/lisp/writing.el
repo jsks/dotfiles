@@ -17,7 +17,7 @@
 (use-package flyspell
   :ensure f
   :diminish (flyspell-mode . " α")
-  :hook (text-mode . (lambda () (flyspell-mode 1)))
+  :hook (text-mode . flyspell-mode)
   :config
   (setq-default ispell-program-name "aspell"
                 ispell-list-command "--list"))
@@ -134,13 +134,15 @@ using 'org-agenda' and 'I'."
                   (":PROPERTIES:" . ":")
                   ("#+BEGIN_SRC" . "λ")
                   ("#+END_SRC" . "⋱")
+                  ("#+begin_src" . "λ")
+                  ("#+end_src" . "⋱")
                   ("#+RESULTS:" . "»")
                   (":END:" . "⋱")
                   (":RESULTS:" . "⋱")
                   ("#+BEGIN_EXAMPLE" . "~")
                   ("#+END_EXAMPLE" . "~")))
 
-  (add-hook 'org-mode-hook (lambda () (prettify-symbols-mode)))
+  (add-hook 'org-mode-hook 'prettify-symbols-mode)
 
   ;; Symbol indicating hidden content
   (setq org-ellipsis " ⇣")
@@ -152,9 +154,10 @@ using 'org-agenda' and 'I'."
                                (python . t)
                                (R . t)))
 
-  ;; <r TAB inserts an R code block
-  (add-to-list 'org-structure-template-alist
-               '("r" "#+BEGIN_SRC R ?\n\n#+END_SRC")))
+  ;; Get old easy-template behavior back so that <r TAB inserts an R
+  ;; code block
+  (require 'org-tempo)
+  (add-to-list 'org-structure-template-alist '("r" . "src R")))
 
 ;; Display matching org header
 (use-package org-sticky-header
