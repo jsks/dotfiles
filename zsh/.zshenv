@@ -19,7 +19,7 @@ export LESS_TERMCAP_us=$'\E[00;31m'
 export GROFF_NO_SGR=1
 
 #-- Misc. exports --#
-export EDITOR="emacsclient -nw -a emacs -nw"
+export EDITOR="vim"
 export LESS="-r"
 export BROWSER="chromium"
 export NOCOLOR_PIPE=1
