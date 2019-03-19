@@ -38,4 +38,5 @@ Don't modify <tab> to become uppercase."
 
   (setq shell-pop-window-position "top"
         shell-pop-window-size 40
-        shell-pop-full-span t))
+        shell-pop-full-span t
+        shell-pop-autocd-to-working-dir nil))
