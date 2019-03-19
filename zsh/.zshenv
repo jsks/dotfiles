@@ -8,10 +8,10 @@ export FZF_DEFAULT_COMMAND="ag -g '' --nocolor --hidden"
 
 #-- Colored man pages --#
 export LESS_TERMCAP_mb=$'\E[00;31m'
-export LESS_TERMCAP_md=$'\E[00;34m'
+export LESS_TERMCAP_md=$'\E[01;34m'
 export LESS_TERMCAP_me=$'\E[0m'
 export LESS_TERMCAP_se=$'\E[0m'
-export LESS_TERMCAP_so=$'\E[00;36m'
+export LESS_TERMCAP_so=$'\E[01;33m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[00;31m'
 
