@@ -1,0 +1,5 @@
+options(defaultPackages = c(getOption("defaultPackages"), "dplyr"))
+options(Ncpus = parallel::detectCores())
+options(max.print = 300)
+options(menu.graphics = F)
+options(repos = c(CRAN = "https://cloud.r-project.org"))
