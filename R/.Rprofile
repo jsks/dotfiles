@@ -1,3 +1,6 @@
+# Completion should always leaves spaces around `=`
+utils::rc.options(funarg.suffix = " = ")
+
 options(defaultPackages = c(getOption("defaultPackages"), "dplyr"))
 options(Ncpus = parallel::detectCores())
 options(max.print = 300)
