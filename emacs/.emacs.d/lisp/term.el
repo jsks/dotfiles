@@ -5,7 +5,8 @@ taken from feebleline; however, we only want to drop moody-line for
 vterm."
   (setq-local mode-line-format "")
   (face-remap-add-relative 'mode-line nil :height 10)
-  (setq-local global-hl-line-mode nil))
+  (setq-local global-hl-line-mode nil)
+  (company-mode -1))
 
 (defun cloud/send-backtab ()
   "Modified version of 'vterm-send-key'.
