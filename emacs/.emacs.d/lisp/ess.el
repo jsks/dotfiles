@@ -39,12 +39,15 @@
   (require 'ess-rdired)
   (require 'ess-jags-d)
 
-  ;; You really don't want this. Disable indenting comments based on
-  ;; how many leading characters. This needs to be a hook since it's
-  ;; buffer specific.
+  ;; You really don't want this enabled. Disable indenting comments
+  ;; based on how many leading characters. This needs to be a hook
+  ;; since it's buffer specific.
   (defun my-ess-settings ()
     (setq ess-indent-with-fancy-comments nil))
   (add-hook 'ess-mode-hook #'my-ess-settings)
+
+  ;; Save all history into a single file
+  (setq ess-history-directory "~/.R/")
 
   (setq ess-nuke-trailing-whitespace-p t
         ess-default-style 'C++
