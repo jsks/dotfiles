@@ -1,8 +1,8 @@
-CC = clang
-CXX = clang++
-CXX11 = clang++
-CXX14 = clang++
-CXX17 = clang++
+CC = /usr/local/opt/llvm/bin/clang
+CXX = /usr/local/opt/llvm/bin/clang++
+CXX11 = /usr/local/opt/llvm/bin/clang++
+CXX14 = /usr/local/opt/llvm/bin/clang++
+CXX17 = /usr/local/opt/llvm/bin/clang++
 
 # From Rcpp documentation, use homebrew gfortran
 FLIBS=`gfortran -print-search-dirs | grep ^libraries: | sed 's|libraries: =||' | sed 's|:| -L|g' | sed 's|^|-L|`
