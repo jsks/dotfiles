@@ -22,7 +22,6 @@
   (interactive)
   (split-window nil nil 'left)
   (call-interactively 'R)
-  (setq-local mode-line-format nil)
   (other-window -1))
 
 (use-package ess-site
@@ -54,17 +53,12 @@
         ess-eval-visibly-p 'nowait
         ess-tab-complete-in-script t)
 
-  (add-hook 'ess-mode-hook
-            (lambda ()
-              (push '("%>%" . ?▶) prettify-symbols-alist)
-              (push '("%<>%" . ?⧎) prettify-symbols-alist)
-              (push '("%$%" . ?◆) prettify-symbols-alist)
-              (push '(">=" . ?≥) prettify-symbols-alist)
-              (push '("<=" . ?≤) prettify-symbols-alist)
-              (push '("!=" . ?≠) prettify-symbols-alist)
-              (push '("function" . ?ƒ) prettify-symbols-alist)
-              (push '("->>" . ?↦) prettify-symbols-alist)
-              (push '("<<-" . ?↤) prettify-symbols-alist))))
+  (push '("%>%" . ?▶) ess-r-prettify-symbols)
+  (push '("%<>%" . ?⧎) ess-r-prettify-symbols)
+  (push '("%$%" . ?◆) ess-r-prettify-symbols)
+  (push '(">=" . ?≥) ess-r-prettify-symbols)
+  (push '("<=" . ?≤) ess-r-prettify-symbols)
+  (push '("!=" . ?≠) ess-r-prettify-symbols))
 
 (use-package stan-mode)
 
