@@ -2,7 +2,7 @@
 
 function check {
     if ! which $1 >/dev/null; then
-        # Be really annoying about htis
+        # Be really annoying about this
         print "Missing cli tool: $1"
         return 1
     fi

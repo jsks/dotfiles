@@ -40,10 +40,8 @@ check bat && alias cat="bat"
 # Replace `grep`
 if check ag; then
     alias agf="ag -l"
-    alias lg="ag --hidden -ng"
 else
     alias agf="grep -l"
-    alias lg="l | grep"
 fi
 
 #-- Global --#
