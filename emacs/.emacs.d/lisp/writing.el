@@ -167,12 +167,12 @@ using 'org-agenda' and 'I'."
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode))
 
-;; Reference management
+;;; Reference management
 (use-package ivy-bibtex
   :init
   (setq bibtex-completion-bibliography "~/Dropbox/refs/library.bib"
         bibtex-completion-pdf-field "file"
-        bibtex-completion-notes-path "~/Dropbox/refs/library.org"
+        bibtex-completion-notes-path "~/notes/lit.org"
         bibtex-completion-pdf-symbol "⌘"
         bibtex-completion-notes-symbol "✎"
         ivy-bibtex-default-action 'ivy-bibtex-insert-citation)
@@ -184,16 +184,4 @@ using 'org-agenda' and 'I'."
   ("C-c c" 'ivy-bibtex)
   (:states 'normal
            :prefix "SPC"
-           "fq" 'ivy-bibtex)
-
-  :config
-  (load "~/.emacs.d/lisp/refs.el")
-  (ivy-bibtex-ivify-action cloud/insert-org-link ivy-bibtex-insert-link)
-
-  (ivy-set-actions
-   'ivy-bibtex
-   '(("c" ivy-bibtex-insert-citation "Insert citation")
-     ("p" ivy-bibtex-open-pdf "Open PDF file (if present)")
-     ("l" ivy-bibtex-insert-link "Insert bibtex link")
-     ("e" ivy-bibtex-edit-notes "Edit notes")
-     ("s" ivy-bibtex-show-entry "Show entry"))))
+           "fq" 'ivy-bibtex))
