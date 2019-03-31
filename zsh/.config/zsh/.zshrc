@@ -60,7 +60,11 @@ compinit
 autoload -U colors && colors
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:*' formats "%b "
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' unstagedstr  "*"
+zstyle ':vcs_info:git:*' stagedstr  "+"
+zstyle ':vcs_info:*' formats "%b%u%c "
+zstyle ':vcs_info:*' actionformats "%b|%a%u%c "
 
 zmodload -i zsh/complist
 
