@@ -176,7 +176,7 @@ Disables all enabled themes first before loading the target theme."
 ;; Highlight current parantheses pair
 (use-package highlight-parentheses
   :diminish highlight-parentheses-mode
-  :config (global-highlight-parentheses-mode t))
+  :hook (prog-mode . highlight-parentheses-mode))
 
 ;; I too have colleagues
 (use-package editorconfig
