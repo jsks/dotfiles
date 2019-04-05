@@ -17,8 +17,9 @@
 
 ;; Function to quickly start R
 (defun r-repl ()
-  "Starts an R session in a buffer to the right of the current buffer,
-   whilst still preserving focus."
+  "Start an interactive R session.
+Buffer is opened to the right of the current buffer whilst still
+presering focus."
   (interactive)
   (split-window nil nil 'left)
   (call-interactively 'R)

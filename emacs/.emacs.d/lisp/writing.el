@@ -38,8 +38,9 @@ using 'org-agenda' and 'I'."
   :ensure org-plus-contrib
   :hook (org-mode . (lambda ()
                       (auto-fill-mode t)
-                      (org-indent-mode 1)
-                      (diminish 'org-indent-mode)))
+                      (org-indent-mode t)
+                      (diminish 'org-indent-mode)
+                      (org-display-inline-images)))
   :init (setq org-src-fontify-natively t
               org-fontify-whole-heading-line t)
   :general (:states '(normal visual)
@@ -154,10 +155,16 @@ using 'org-agenda' and 'I'."
                                (python . t)
                                (R . t)))
 
+  ;; When editing src block keep window arrangement as is
+  (setq org-src-window-setup 'split-window-below)
+
   ;; Get old easy-template behavior back so that <r TAB inserts an R
   ;; code block
   (require 'org-tempo)
   (add-to-list 'org-structure-template-alist '("r" . "src R")))
+
+;; Interactive eval of src blocks with polymode
+(use-package poly-org)
 
 ;; Display matching org header
 (use-package org-sticky-header
