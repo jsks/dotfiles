@@ -23,7 +23,13 @@ alias p="pushd"
 alias P="popd"
 alias wstrip="sed '/^#/d'"
 
-##-- Non-Standard tools --#
+#-- Git --#
+alias ga="git add"
+alias gl="git log --oneline"
+alias gm="git commit -m"
+alias gs="git status"
+
+#-- Non-Standard tools --#
 # Replace `ls`
 if check exa; then
     alias ls="exa --color auto"
