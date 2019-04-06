@@ -9,6 +9,7 @@ from shutil import copy
 from urllib.parse import urlparse
 from pathlib import Path
 
+import re
 import os
 import sqlite3
 import sys
@@ -19,6 +20,8 @@ def error(*args):
 
 exceptions = ["github", "gitlab", "google", "wikipedia"]
 header = "########## Work Mode"
+
+pattern = re.compile("^(chrome|file)://")
 
 if not os.access("/etc/hosts", os.W_OK):
     error("Permissions error: unable to write to /etc/hosts")
@@ -71,6 +74,9 @@ with open("/etc/hosts", "r+") as f:
 
     d = defaultdict(int)
     for row in rows:
+        if pattern.match(row["url"]):
+            continue
+
         domain = urlparse(row["url"]).netloc.replace("www.", "")
         d[domain] += row["typed_count"]
 
