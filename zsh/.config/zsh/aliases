@@ -25,6 +25,7 @@ alias wstrip="sed '/^#/d'"
 
 #-- Git --#
 alias ga="git add"
+alias gd="git diff"
 alias gl="git log --oneline"
 alias gm="git commit -m"
 alias gs="git status"

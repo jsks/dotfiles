@@ -1,3 +1,10 @@
+#-- Tramp settings --#
+if [[ $TERM == "dumb" ]]; then
+    unsetopt zle
+    PS1="> "
+    return
+fi
+
 #-- Set path --#
 # Keep this in .zshrc, otherwise overwritten by system zshrc
 export GOPATH=~/go
