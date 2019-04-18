@@ -18,10 +18,8 @@ def error(*args):
     print(*args, file = sys.stderr)
     sys.exit(1)
 
-exceptions = ["github", "gitlab", "google", "wikipedia"]
+exceptions = ["azure", "github", "gitlab", "google", "vasttrafik", "wikipedia"]
 header = "########## Work Mode"
-
-pattern = re.compile("^(chrome|file)://")
 
 if not os.access("/etc/hosts", os.W_OK):
     error("Permissions error: unable to write to /etc/hosts")
@@ -73,6 +71,7 @@ with open("/etc/hosts", "r+") as f:
     rows = db.execute("select url, typed_count from urls;").fetchall()
 
     d = defaultdict(int)
+    pattern = re.compile("^(chrome|file)://")
     for row in rows:
         if pattern.match(row["url"]):
             continue
