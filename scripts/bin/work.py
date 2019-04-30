@@ -4,10 +4,13 @@
 # chrome through /etc/hosts for a distraction free workflow.
 ###
 
+from bs4 import BeautifulSoup
 from collections import defaultdict
-from shutil import copy
-from urllib.parse import urlparse
 from pathlib import Path
+from shutil import chown, copy
+from time import time
+from urllib.parse import urlparse
+from urllib.request import urlopen
 
 import re
 import os
@@ -18,7 +21,33 @@ def error(*args):
     print(*args, file = sys.stderr)
     sys.exit(1)
 
-exceptions = ["azure", "github", "gitlab", "google", "vasttrafik", "wikipedia"]
+def alexa(country):
+    p = Path.home().joinpath(*[".cache", "work_mode", country])
+
+    if p.is_file() and (time() - p.stat().st_mtime) / (60 * 60 * 24) < 30:
+        cached_sites = p.read_text().split("\n")
+        if len(cached_sites) == 50:
+            return cached_sites
+
+    try:
+        html = urlopen("https://www.alexa.com/topsites/countries/" + country).read().decode('utf-8')
+        soup = BeautifulSoup(html, "html.parser")
+
+        ll = soup.find_all("div", class_ = "DescriptionCell")
+        sites = [e.a.get_text().lower() for e in ll]
+        print(f"Downloaded {len(sites)} top sites for {country}")
+
+        p.write_text("\n".join(sites))
+        chown(p, user = "cloud")
+
+        return sites
+    except:
+        print("Unable to download, skipping alexa list for " + country, file = sys.stderr)
+        return []
+
+exceptions = ["127.0.0.1", "localhost", "azure", "dropbox", "github",
+              "gitlab", "google", "stackoverflow", "vasttrafik",
+              "wikipedia"]
 header = "########## Work Mode"
 
 if not os.access("/etc/hosts", os.W_OK):
@@ -79,7 +108,7 @@ with open("/etc/hosts", "r+") as f:
         domain = urlparse(row["url"]).netloc.replace("www.", "")
         d[domain] += row["typed_count"]
 
-    block = []
+    block = set()
     keys = sorted(d, key = d.get, reverse = True)
 
     for k in keys:
@@ -87,7 +116,13 @@ with open("/etc/hosts", "r+") as f:
             break
 
         if not any (x in k for x in exceptions):
-            block.append(k)
+            block.add(k)
+
+    # Grab also Alexa top 50
+    top_50 = alexa("US") + alexa("SE")
+    for site in top_50:
+        if not any (x in site for x in exceptions):
+            block.add(site)
 
     f.write(header + "\n")
 
