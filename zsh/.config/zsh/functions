@@ -3,7 +3,7 @@
 function check {
     if ! which $1 >/dev/null; then
         # Be really annoying about this
-        [[ $TERM == "dumb" ]] && print "Missing cli tool: $1"
+        [[ $TERM != "dumb" ]] && print "Missing cli tool: $1"
         return 1
     fi
 }
