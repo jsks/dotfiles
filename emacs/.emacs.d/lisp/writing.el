@@ -174,6 +174,16 @@ using 'org-agenda' and 'I'."
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode))
 
+;; Notational velocity like file search
+(use-package deft
+  :general (:states 'normal
+                    :prefix "SPC"
+                    "fn" 'deft)
+  :config
+  (setq deft-extensions '("org")
+        deft-directory "~/notes"
+        deft-use-filename-as-title t))
+
 ;;; Reference management
 (use-package ivy-bibtex
   :init

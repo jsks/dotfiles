@@ -78,3 +78,7 @@ presering focus."
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   :config
   (diminish 'highlight-indentation-mode))
+
+;;; Dockerfile syntax highlighting
+(use-package dockerfile-mode
+  :mode ("Dockerfile\\'" . dockerfile-mode))

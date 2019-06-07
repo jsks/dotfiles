@@ -44,6 +44,9 @@
 (setq initial-scratch-message nil
       initial-major-mode 'text-mode)
 
+;; Open main notes file by default
+(setq initial-buffer-choice "~/notes/n.org")
+
 ;; No tabs, 4 spaces
 (setq-default indent-tabs-mode nil
               tab-width 4)
