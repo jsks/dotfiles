@@ -3,7 +3,7 @@
   :general
   (:keymaps 'ivy-minibuffer-map
         "RET" 'ivy-alt-done
-        "<backtab>" 'ivy-backward-delete-char ;; Up a dir
+        "<backtab>" 'ivy-backward-kill-word ;; Up a dir
         "<escape>" 'minibuffer-keyboard-quit)
   (:states 'normal
    :prefix "SPC"

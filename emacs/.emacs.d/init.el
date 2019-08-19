@@ -47,9 +47,8 @@
 ;; Open main notes file by default
 (setq initial-buffer-choice "~/notes/n.org")
 
-;; No tabs, 4 spaces
-(setq-default indent-tabs-mode nil
-              tab-width 4)
+;; No tabs, friend
+(setq-default indent-tabs-mode nil)
 
 ;; Allow TAB to trigger completion-at-point
 (setq tab-always-indent 'complete)

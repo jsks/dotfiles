@@ -8,21 +8,10 @@ vterm."
   (setq-local global-hl-line-mode nil)
   (company-mode -1))
 
-(defun cloud/send-backtab ()
-  "Modified version of 'vterm-send-key'.
-Don't modify <tab> to become uppercase."
-  (interactive)
-  (when vterm--term
-    (let ((inhibit-redisplay t)
-          (inhibit-read-only t))
-      (vterm--update vterm--term "<tab>" t nil nil))))
-
 ;; Finally, thank the Lord, a decent terminal
 (use-package vterm
   :load-path "~/.emacs.d/local/emacs-libvterm"
   :commands vterm
-  :bind (:map vterm-mode-map
-              ([backtab] . cloud/send-backtab))
   :init
   (evil-set-initial-state 'vterm-mode 'emacs)
   (add-hook 'vterm-mode-hook 'cloud/vterm-hook)
