@@ -44,3 +44,9 @@
    "of" 'counsel-org-goto-all
    "oq" 'counsel-org-tags
    "re" 'counsel-evil-registers))
+
+(use-package ivy-posframe
+  :diminish ivy-posframe-mode
+  :config
+  (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+  (ivy-posframe-mode 1))
