@@ -1,0 +1,36 @@
+#!/usr/bin/env zsh
+#
+# Simple wrapper script used by sxhkd
+###
+
+function help() {
+<<EOF
+Usage: change_vol <option>
+
+Where option is either 'toggle' to mute/unmute or the percentage to
+raise/lower the volume in the form of 5+ or 5-.
+EOF
+}
+
+function change() {
+    volnoti-show $(amixer -M set Master $* | grep -Po "[0-9]+(?=%)")
+}
+
+function toggle() {
+    if amixer set Master toggle | grep -Fq "[off]"; then
+        volnoti-show -m
+    else
+        volnoti-show $(amixer -M get Master | grep -Po "[0-9]+(?=%)")
+    fi
+}
+
+case $1 in
+    toggle)
+        toggle;;
+    <->+|+<->)
+        change "${1//+/}%+";;
+    <->-|-<->)
+        change "${1//-/}%-";;
+    *)
+        help;;
+esac

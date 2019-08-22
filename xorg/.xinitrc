@@ -28,7 +28,10 @@ xautolock -noclose -time 5 -locker "i3lock -c '#d1d1d1'" -nowlocker "i3lock -c #
 setbg -r ~/walls -w 15 &
 
 # Volume daemon
-# volnoti -t 2 &
+volnoti -t 2 &
+
+# Volume keybindings
+sxhkd &
 
 dropbox &
 exec ${1:-awesome}
