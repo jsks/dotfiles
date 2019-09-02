@@ -4,3 +4,7 @@
 [submodule "zsh/.config/zsh/scripts/zsh-hl"]
 	path = zsh/.config/zsh/scripts/zsh-hl
 	url = https://github.com/zsh-users/zsh-syntax-highlighting
+[submodule "tmux/.tmux/tmux-yank"]
+	path = tmux/.tmux/tmux-yank
+	url = https://github.com/tmux-plugins/tmux-yank
+	branch = master
