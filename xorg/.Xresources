@@ -5,10 +5,8 @@
 ! ----------------------------------------------------------------------------
 
 ! Fonts
-#define FONT           xft:Inconsolata\ for\ Powerline:medium:pixelsize=11
-#define FONT_BOLD      xft:Inconsolata\ for\ Powerline:bold:pixelsize=11
-#define FONT_ITALIC    xft:Inconsolata\ for\ Powerline:italic:pixelsize=11
-!#define FONT_UNDERLINE xft:Montecarlo:underline:pixelsize=10
+#define FONT           xft:Inconsolata:style=Regular:pixelsize=11
+#define FONT_BOLD      xft:Inconsolata:style=Bold:pixelsize=11
 
 ! Colors
 #include "/home/cloud/.colors/matte"
@@ -18,29 +16,12 @@
 
 *font:          FONT
 *boldFont:      FONT_BOLD
-*italicFont:    FONT_ITALIC
 
 Xft.antialias:  1
 Xft.autohint:   0
-Xft.dpi:        96
 Xft.hinting:    1
 Xft.hintstyle:  hintfull
 Xft.lcdfilter:  lcddefault
 Xft.rgba:       rgb
-
-! Terminal
-URxvt.matcher.button:    1
-URxvt.perl-ext-common:   default,matcher,clipboard
-URxvt.colorUL:           #86a2be
-URxvt.InternalBorder:    0
-URxvt.externalBorder:    0
-URxvt*cursorColor:       white
-URxvt*underlineColor:   magenta
-URxvt*scrollBar:         False
-URxvt*saveLines:         1000
-URxvt*skipScroll:        False
-URxvt*fading:            15
-URxvt*fadeColor:         [0]black
-URxvt*secondaryWheel:    true
 
 Xcursor.theme: 		 default

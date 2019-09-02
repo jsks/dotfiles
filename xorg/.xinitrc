@@ -9,8 +9,6 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
     done
 fi
 
-xrandr --output HDMI1 --auto --output DP2 --auto --left-of HDMI1
-
 # X Settings
 xrdb -load ~/.Xresources
 setxkbmap -option caps:escape -option altwin:swap_alt_win -layout us,se
@@ -25,7 +23,7 @@ xautolock -noclose -time 5 -locker "i3lock -c '#d1d1d1'" -nowlocker "i3lock -c #
 [[ -z $(pgrep tmux) ]] && tmux new-session -d &
 
 # Set wallpaper
-setbg -r ~/walls -w 15 &
+setbg -s ~/pictures/alfred-kubin-1920x1080-70773.jpg
 
 # Volume daemon
 volnoti -t 2 &
