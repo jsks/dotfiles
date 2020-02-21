@@ -1,3 +1,9 @@
+XF86MonBrightnessUp
+    brightnessctl -d intel_backlight s +5%
+
+XF86MonBrightnessDown
+    brightnessctl -d intel_backlight s 5%-
+
 XF86AudioLowerVolume
     change_vol 5-
 
