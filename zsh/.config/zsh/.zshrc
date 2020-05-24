@@ -8,7 +8,7 @@ fi
 #-- Set path --#
 # Keep this in .zshrc, otherwise overwritten by system zshrc
 export GOPATH=~/go
-export PATH="/opt/stata:$HOME/bin:$PATH:$HOME/go/bin:$HOME/.npm/bin:$HOME/.cargo/bin"
+export PATH="$HOME/bin:$PATH:$HOME/go/bin:$HOME/.npm/bin:$HOME/.cargo/bin:$HOME/.local/bin"
 
 fpath=(/usr/local/share/zsh-completions $fpath)
 
