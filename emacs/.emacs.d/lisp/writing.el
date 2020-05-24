@@ -1,7 +1,8 @@
 ;;; Packages for writing
 (use-package markdown-mode
   :commands (markdown-mode)
-  :mode ("\\.[R]md" . markdown-mode)
+  :mode (("README\\.md" . gfm-mode)
+         ("\\.[R]md" . markdown-mode))
   :init (setq markdown-command "pandoc"))
 
 ;; Distraction free writing
