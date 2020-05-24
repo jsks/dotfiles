@@ -15,44 +15,43 @@
            comint-scroll-show-maximum-output t
            comint-move-point-for-output t)))
 
-;; Function to quickly start R
-(defun r-repl ()
-  "Start an interactive R session.
-Buffer is opened to the right of the current buffer whilst still
-presering focus."
-  (interactive)
-  (split-window nil nil 'left)
-  (call-interactively 'R)
-  (other-window -1))
-
-(use-package ess-site
-  :load-path "~/.emacs.d/local/ess-18.10.2/lisp"
+(use-package ess
+  :init (require 'ess-site)
   :commands R
-  :mode ("\\.R\\'" . R-mode)
   :general
+  (:states 'insert
+            :keymaps 'ess-mode-map
+            ";" 'ess-insert-assign)
+  (:states 'insert
+           :keymaps 'inferior-ess-mode-map
+           ";" 'ess-insert-assign)
   (:states 'normal
            :prefix "SPC"
            "e" '(:ignore t :which-key "ESS")
-           "ei" 'r-repl)
+           "ei" 'R
+           "ed" 'ess-rdired)
   :config
-  (require 'ess-site)
-  (require 'ess-rdired)
-  (require 'ess-jags-d)
+  (defun local-ess-settings ()
+    ;; You really don't want this enabled. Disable indenting comments
+    ;; based on how many leading characters. This needs to be a hook
+    ;; since it's buffer specific.
+    (setq ess-indent-with-fancy-comments nil)
 
-  ;; You really don't want this enabled. Disable indenting comments
-  ;; based on how many leading characters. This needs to be a hook
-  ;; since it's buffer specific.
-  (defun my-ess-settings ()
-    (setq ess-indent-with-fancy-comments nil))
-  (add-hook 'ess-mode-hook #'my-ess-settings)
+    ;; Auto append newline after opening brace
+    (electric-layout-mode))
+  (add-hook 'ess-mode-hook #'local-ess-settings)
+
+  (defun local-inferior-ess-settings ()
+    ;; Make the read-only comint prompt play nicer with evil-mode
+    (setq-local comint-use-prompt-regexp nil)
+    (setq-local inhibit-field-text-motion nil))
+  (add-hook 'inferior-ess-mode-hook #'local-inferior-ess-settings)
 
   ;; Save all history into a single file
   (setq ess-history-directory "~/.R/")
 
   (setq ess-nuke-trailing-whitespace-p t
-        ess-default-style 'C++
-        ess-eval-visibly-p 'nowait
-        ess-tab-complete-in-script t)
+        ess-style 'C++)
 
   (push '("%>%" . ?▶) ess-r-prettify-symbols)
   (push '("%<>%" . ?⧎) ess-r-prettify-symbols)
@@ -62,22 +61,6 @@ presering focus."
   (push '("!=" . ?≠) ess-r-prettify-symbols))
 
 (use-package stan-mode)
-
-;;; Python
-(use-package elpy
-  :after python
-  :hook (python-mode . elpy-mode)
-  :init
-  (setq python-shell-interpreter "jupyter"
-        python-shell-interpreter-args "console --simple-prompt"
-        python-shell-prompt-detect-failure-warning nil)
-  (add-to-list 'python-shell-completion-native-disabled-interpreters
-               "jupyter")
-
-  (elpy-enable)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  :config
-  (diminish 'highlight-indentation-mode))
 
 ;;; Dockerfile syntax highlighting
 (use-package dockerfile-mode

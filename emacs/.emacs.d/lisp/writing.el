@@ -165,6 +165,8 @@ using 'org-agenda' and 'I'."
 
 ;; Interactive eval of src blocks with polymode
 (use-package poly-org)
+(use-package poly-markdown
+  :mode ("\\.Rmd" . poly-markdown-mode))
 
 ;; Display matching org header
 (use-package org-sticky-header
