@@ -195,7 +195,7 @@ Disables all enabled themes first before loading the target theme."
    "gp" 'magit-dispatch-popup))
 
 ;; Mark git line changes
-(use-package git-gutter
+(use-package git-gutter-fringe
   :diminish git-gutter-mode
   :init (global-git-gutter-mode))
 
