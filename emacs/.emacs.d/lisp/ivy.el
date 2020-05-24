@@ -2,12 +2,12 @@
   :diminish ivy-mode
   :general
   (:keymaps 'ivy-minibuffer-map
-        "RET" 'ivy-alt-done
-        "<backtab>" 'ivy-backward-kill-word ;; Up a dir
-        "<escape>" 'minibuffer-keyboard-quit)
+            "RET" 'ivy-alt-done
+            "<backtab>" 'ivy-backward-kill-word ;; Up a dir
+            "<escape>" 'minibuffer-keyboard-quit)
   (:states 'normal
-   :prefix "SPC"
-   "bb" 'ivy-switch-buffer)
+           :prefix "SPC"
+           "bb" 'ivy-switch-buffer)
 
   :config
   (setq ivy-use-virtual-buffers t)
@@ -35,18 +35,21 @@
   :bind (([remap completion-at-point] . counsel-company))
   :general
   (:states 'normal
-   :prefix "SPC"
-   "eh" 'counsel-shell-history
-   "fr" 'counsel-recentf
-   "ff" 'counsel-find-file
-   "fa" 'counsel-ag
-   "fg" 'counsel-git
-   "of" 'counsel-org-goto-all
-   "oq" 'counsel-org-tags
-   "re" 'counsel-evil-registers))
+           :prefix "SPC"
+           "fr" 'counsel-recentf
+           "ff" 'counsel-find-file
+           "fa" 'counsel-ag
+           "fg" 'counsel-git
+           "of" 'counsel-org-goto-all
+           "oq" 'counsel-org-tags
+           "re" 'counsel-evil-registers)
+  (:states '(normal insert)
+           :keymaps 'comint-mode-map
+           "<backtab>" 'counsel-shell-history))
 
 (use-package ivy-posframe
   :diminish ivy-posframe-mode
   :config
-  (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+  (setq ivy-posframe-display-functions-alist
+        '((t . ivy-posframe-display-at-frame-center)))
   (ivy-posframe-mode 1))
