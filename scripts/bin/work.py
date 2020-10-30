@@ -22,7 +22,8 @@ def error(*args):
     sys.exit(1)
 
 def alexa(country):
-    p = Path.home().joinpath(*[".cache", "work_mode", country])
+    p = Path("/tmp").joinpath(*["work_mode", country])
+    Path.mkdir(p.parent, exist_ok = True)
 
     if p.is_file() and (time() - p.stat().st_mtime) / (60 * 60 * 24) < 30:
         cached_sites = p.read_text().split("\n")
@@ -30,12 +31,12 @@ def alexa(country):
             return cached_sites
 
     try:
+        print(f"Downloading top sites for {country}...")
         html = urlopen("https://www.alexa.com/topsites/countries/" + country).read().decode('utf-8')
         soup = BeautifulSoup(html, "html.parser")
 
         ll = soup.find_all("div", class_ = "DescriptionCell")
         sites = [e.a.get_text().lower() for e in ll]
-        print(f"Downloaded {len(sites)} top sites for {country}")
 
         p.write_text("\n".join(sites))
         chown(p, user = "cloud")
@@ -44,6 +45,7 @@ def alexa(country):
     except:
         print("Unable to download, skipping alexa list for " + country, file = sys.stderr)
         return []
+
 
 exceptions = ["127.0.0.1", "localhost", "azure", "dropbox", "github",
               "gitlab", "google", "stackoverflow", "vasttrafik",
@@ -78,19 +80,20 @@ with open("/etc/hosts", "r+") as f:
         db_file = Path.home().joinpath(*["Library", "Application Support",
                                          "Google", "Chrome", "Default", "History"])
     elif sys.platform == "linux":
-        db_file = Path.home().joinpath(*[".config", "chromium",
-                                         "Default", "History"])
+        db_file = Path("/home").joinpath(*[os.getenv("SUDO_USER"), ".config", "chromium",
+                                           "Default", "History"])
     else:
         error(f"Platform error: '{sys.platform}' not supported")
 
     if not Path.is_file(db_file):
-        error("Error: unable to find history database")
+        error(f"Unable to open database file: {db_file}")
 
     # If chrome/chromium is open then History will be locked so copy
     # to a local directory before attempting to open
-    target = Path.home().joinpath(*[".cache", "work_mode", "History"])
+    target = Path("/tmp").joinpath(*["work_mode", "History"])
     Path.mkdir(target.parent, parents = True, exist_ok = True)
     copy(db_file, target)
+    chown(db_file, user = "cloud")
 
     db = sqlite3.connect(target)
     db.row_factory = sqlite3.Row
@@ -119,7 +122,7 @@ with open("/etc/hosts", "r+") as f:
             block.add(k)
 
     # Grab also Alexa top 50
-    top_50 = alexa("US") + alexa("SE")
+    top_50 = alexa("US") + alexa("SE") + alexa("NO")
     for site in top_50:
         if not any (x in site for x in exceptions):
             block.add(site)
