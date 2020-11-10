@@ -111,9 +111,9 @@ function xhead2 {
 }
 
 function ww {
-    curl "wttr.in/${1:-Göteborg}?format=3"
+    curl "wttr.in/${1:-Oslo}?format=3"
 }
 
 function wwl {
-    curl "wttr.in/${1:-Göteborg}"
+    curl "wttr.in/${1:-Oslo}"
 }

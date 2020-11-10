@@ -92,7 +92,9 @@ bindkey -a j history-beginning-search-forward
 
 check fzf && {
     # ctrl-r is so awkward
-    . ~/.fzf.zsh &&  bindkey "^[[Z" fzf-history-widget
+    . /usr/share/fzf/completion.zsh
+    . /usr/share/fzf/key-bindings.zsh
+    bindkey "^[[Z" fzf-history-widget
 }
 
 #-- Prompt --#

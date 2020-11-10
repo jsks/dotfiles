@@ -11,7 +11,6 @@ alias V="sudo vim"
 #-- Simple shell aliases --#
 alias cp="cp -RPv"
 alias grep="grep --color=auto"
-alias lg="ls -a | grep"
 alias mkdir="mkdir -p"
 alias mv="mv -i"
 alias rm="rm -iR"
@@ -46,10 +45,10 @@ fi
 check bat && alias cat="bat"
 
 # Replace `grep`
-if check ag; then
-    alias agf="ag -l"
+if check rg; then
+    alias rgf="rg -l"
 else
-    alias agf="grep -l"
+    alias rgf="grep -l"
 fi
 
 #-- Global --#
