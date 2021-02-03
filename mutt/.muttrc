@@ -1,66 +1,72 @@
-set folder = ~/mail
-set signature = "~/.mutt/sig"
-set sig_on_top = yes
+source ~/.mutt/dev.muttrc
+folder-hook $folder 'source ~/.mutt/dev.muttrc'
 
-folder-hook "+gmail/*" "source ~/.mutt/gmail.muttrc"
+source ~/.mutt/gu.muttrc
+folder-hook $folder 'source ~/.mutt/gu.muttrc'
 
 source ~/.mutt/colors.muttrc
 source ~/.mutt/sidebar.muttrc
 
-set editor = "emacsclient -nw"
-set use_from = yes
-
 unset imap_passive
+set imap_check_subscribed = yes
+set imap_list_subscribed = yes
 set imap_idle = yes
-set imap_keepalive = 300
 
 set certificate_file = ~/.mutt/certificates
 set ssl_starttls = yes
 set ssl_force_tls = yes
 
-set sort_alias = alias
-set reverse_alias
-set delete
-set quit
+set header_cache = ~/.cache/neomutt/
+set header_cache_backend = lmdb
+set header_cache_compress_method = zstd
+set header_cache_compress_level = 3
 
-set strict_threads = "yes"
+set attach_save_dir = ~/Downloads
+
+set editor = "vim"
+set use_from = yes
+
+set sort_alias = alias
+set reverse_alias = yes
+set delete = yes
+
+set strict_threads = yes
 set sort = threads
 set sort_aux = reverse-last-date-received
-set uncollapse_jump
-set pager_stop
-set pager_index_lines=10
-set menu_scroll
-set smart_wrap
-set tilde
-set abort_nosubject = "yes"
+set uncollapse_jump = yes
+set pager_stop = yes
+set pager_index_lines = 10
+set menu_scroll = yes
+set tilde = yes
+set abort_nosubject = yes
+
+unset help
+unset mark_old
 unset markers
+unset use_domain
+unset wait_key
 
-set query_command = "notmuch-addrlookup --mutt '%s'"
-
-set mailcap_path="~/.mutt/mailcap"
+set mailcap_path = "~/.mutt/mailcap"
 auto_view text/html
 alternative_order text/plain text/enriched text/html
 
-set date_format = "%y-%m-%d at %H:%M"
-set index_format = "%3C [%Z] %D %-15.15F %?M?(+%M)? %s"
-set status_format = "-%r %v ---[ Folder: %f, Msgs: %m \
-%?d? Del: %d?%?t? Tag: %t?%?l? %l? ]%?p?---- .: %p waiting to send :. ?--%>- (%P) ---"
+set date_format = "%Y-%m-%d at %H:%M"
+set index_format = " %D %Z %-20.20F %?M?(+%M)? %s"
+set status_format = "───[ Folder: %f, %m messages%?u?, %u unread?%?d?, %d deleted? ]\
+%?p?──── .: %p waiting to send :. ?──%>─(%P)───"
 folder-hook . 'exec first-entry'
 folder-hook . 'exec collapse-all'
 
-set sig_dashes
-set edit_headers = "yes"
-set fast_reply
-set forward_format = "On %d, %n wrote:"
-set reply_to
-set reverse_name
-set forward_quote
+set edit_headers = yes
+set fast_reply = yes
+set forward_format = "Fwd: %s"
+set reply_to = yes
+set reverse_name = yes
+set forward_quote = yes
 
 ignore *
 unignore from: to: cc: date: subject:
 hdr_order from: to: cc: date: subject:
-
-set wait_key = "no"
 
 bind index,pager \#      noop
 bind index,pager g       noop
@@ -80,9 +86,12 @@ bind pager       J      next-undeleted
 bind index       K      previous-unread
 bind index       J      next-unread
 bind index,pager R      group-reply
+bind index,pager @      compose-to-sender
 bind editor      <tab>  complete-query
 bind index       !      flag-message
 bind index       <tab>  collapse-thread
 bind index       _      collapse-all
 
-macro index       B       "<limit>~b " "search message bodies"
+macro index       B       '<limit>=B ' 'search message bodies'
+macro index,pager <f2> '<sync-mailbox><enter-command>source ~/.mutt/gu.muttrc<enter><change-folder>!<enter>'
+macro index,pager <f3> '<sync-mailbox><enter-command>source ~/.mutt/dev.muttrc<enter><change-folder>!<enter>'

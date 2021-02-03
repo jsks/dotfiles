@@ -1,11 +1,15 @@
-set sidebar_visible	= yes
+set sidebar_visible	= no
+set sidebar_width = 20
 set sidebar_next_new_wrap = yes
 set mail_check_stats = yes
 set sidebar_format  = '%B%* %N'
-mailboxes +vdem/Inbox +gmail/Inbox
 
+color sidebar_ordinary color245 default
 color sidebar_new brightyellow default
+color sidebar_flagged red default
+color sidebar_unread blue default
 
-bind index,pager \CN	sidebar-next
-bind index,pager \CP	sidebar-prev
+bind index,pager \CJ	sidebar-next
+bind index,pager \CK	sidebar-prev
 bind index,pager \CO	sidebar-open
+bind index,pager <backtab> sidebar-toggle-visible
