@@ -20,7 +20,7 @@ set expandtab
 set smarttab
 set backspace=2
 set foldmethod=marker
-set clipboard=unnamed
+set clipboard=unnamedplus
 
 set hidden
 set history=50
