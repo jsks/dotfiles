@@ -64,6 +64,9 @@ using 'org-agenda' and 'I'."
            :states 'motion
             "@" 'org-agenda-add-note)
   :config
+  ;; Don't expand topics when opening file
+  (setq org-startup-folded t)
+
   ;; Space b/w collapsed headers
   (setq org-cycle-separator-lines 1)
 
