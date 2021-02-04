@@ -9,7 +9,11 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
-local hotkeys_popup = require("awful.hotkeys_popup").widget
+local hotkeys_popup = require("awful.hotkeys_popup")
+-- Enable hotkeys help widget for VIM and other pps
+-- when client with a matching name is opened:
+require("awful.hotkeys_popup.keys")
+
 local scratch = require("scratch")
 
 -- {{{ Error handling
@@ -412,8 +416,7 @@ awful.rules.rules = {
     { rule = { class = "Emacs" },
       properties = { floating = false, tag = sharedtags[2], switchtotag = true } },
     { rule = { class = "Gnumeric" },
-      properties = { floating = false, maximized_vertical = true, maximized_horizontal = true,
-                     sharedtag = sharedtags[4], switchtotag = true } },
+      properties = { floating = false, tag = sharedtags[4], switchtotag  = true } },
     { rule = { class = "Zathura" },
       properties = { floating = false, tag = sharedtags[6], switchtotag = true } }
 }
