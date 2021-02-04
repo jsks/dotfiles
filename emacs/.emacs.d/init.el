@@ -218,11 +218,18 @@ Disables all enabled themes first before loading the target theme."
   :init (eval-after-load 'flycheck
           (flycheck-pos-tip-mode)))
 
-;; Patched version of pdf-tools for macOS
+;; View PDF documents
 (use-package pdf-tools
   :config
   (pdf-tools-install)
   (setq-default pdf-view-display-size 'fit-page))
+
+;; Racket dev
+(use-package racket-mode
+  :general
+  (:keymaps 'racket-mode-map
+            "C-c C-c" 'racket-send-region
+            "C-c C-r" 'racket-run-module-at-point))
 
 ;;; Config specific files
 ;; vterm terminal
