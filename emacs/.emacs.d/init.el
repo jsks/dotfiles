@@ -192,7 +192,7 @@ Disables all enabled themes first before loading the target theme."
    :prefix "SPC"
    "g" '(:ignore t :which-key "magit")
    "gg" 'magit-status
-   "gp" 'magit-dispatch-popup))
+   "gp" 'magit-dispatch))
 
 ;; Mark git line changes
 (use-package git-gutter-fringe
@@ -220,8 +220,6 @@ Disables all enabled themes first before loading the target theme."
 
 ;; Patched version of pdf-tools for macOS
 (use-package pdf-tools
-  :ensure f
-  :pin manual
   :config
   (pdf-tools-install)
   (setq-default pdf-view-display-size 'fit-page))
