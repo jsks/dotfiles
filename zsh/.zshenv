@@ -20,7 +20,7 @@ export GROFF_NO_SGR=1
 
 #-- Misc. exports --#
 export EDITOR="vim"
-export LESS="-r"
+export LESS="-Frs"
 export BROWSER="chromium"
 export NOCOLOR_PIPE=1
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
