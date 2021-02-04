@@ -13,14 +13,14 @@ EOF
 }
 
 function change() {
-    volnoti-show $(amixer -M set Master $* | grep -Po "[0-9]+(?=%)")
+    volnoti-show $(amixer -M set Master $* | grep -Po "[0-9]+(?=%)" | head -n 1)
 }
 
 function toggle() {
     if amixer set Master toggle | grep -Fq "[off]"; then
         volnoti-show -m
     else
-        volnoti-show $(amixer -M get Master | grep -Po "[0-9]+(?=%)")
+        volnoti-show $(amixer -M get Master | grep -Po "[0-9]+(?=%)" | head -n 1)
     fi
 }
 
