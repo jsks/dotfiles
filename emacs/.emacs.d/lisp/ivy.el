@@ -38,7 +38,7 @@
            :prefix "SPC"
            "fr" 'counsel-recentf
            "ff" 'counsel-find-file
-           "fa" 'counsel-ag
+           "fa" 'counsel-rg
            "fg" 'counsel-git
            "of" 'counsel-org-goto-all
            "oq" 'counsel-org-tags
