@@ -38,6 +38,7 @@ inoremap <C-U> <C-G>u<C-U>
 
 if has('mouse')
   set mouse=a
+  set ttymouse=sgr
 endif
 
 if &t_Co > 2 || has("gui_running")
