@@ -1,0 +1,13 @@
+{
+    "layer": "top",
+    "modules-left": [ "sway/workspaces" ],
+    "modules-right": [ "tray", "battery", "clock" ],
+    "battery": {
+        "states": {
+            "low": 20,
+            "critical": 3
+        }
+    }
+
+}
+

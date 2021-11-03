@@ -1,0 +1,35 @@
+#!/usr/bin/env zsh
+#
+# Simple backlight wrapper used by sway
+###
+
+function status() {
+    brightnessctl -m i | cut -d ',' -f4 | tr -d '%'
+}
+
+function inc() {
+    if (( $(status) < 5 )); then
+        brightnessctl s 5%
+    else
+        brightnessctl s +${1}%
+    fi
+}
+
+function dec() {
+    if (( $(status) < 10 )); then
+        brightnessctl s 1%-
+    else
+        brightnessctl s ${1}%-
+    fi
+}
+
+case $1 in
+    <->+|+<->)
+        inc "${1//+/}" >/dev/null;;
+    <->-|-<->)
+        dec "${1//-/}" >/dev/null;;
+    *)
+        help;;
+esac
+
+printf '%s #80000000 #FFFFFFFF #80FFFFFF\n' $(status)
