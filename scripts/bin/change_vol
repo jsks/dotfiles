@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 #
-# Simple wrapper script used by sxhkd
+# Simple volume change wrapper used by sway
 ###
 
 function help() {
@@ -12,25 +12,19 @@ raise/lower the volume in the form of 5+ or 5-.
 EOF
 }
 
-function change() {
-    volnoti-show $(amixer -M set Master $* | grep -Po "[0-9]+(?=%)" | head -n 1)
-}
-
-function toggle() {
-    if amixer set Master toggle | grep -Fq "[off]"; then
-        volnoti-show -m
-    else
-        volnoti-show $(amixer -M get Master | grep -Po "[0-9]+(?=%)" | head -n 1)
-    fi
-}
-
 case $1 in
     toggle)
-        toggle;;
+        pamixer --toggle-mute;;
     <->+|+<->)
-        change "${1//+/}%+";;
+        pamixer -ui "${1//+/}";;
     <->-|-<->)
-        change "${1//-/}%-";;
+        pamixer -ud "${1//-/}";;
     *)
         help;;
 esac
+
+if [[ $(pamixer --get-mute) == "true" ]]; then
+    echo 0
+else
+    pamixer --get-volume
+fi
