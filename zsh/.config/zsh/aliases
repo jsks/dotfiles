@@ -13,7 +13,7 @@ alias cp="cp -RPv"
 alias grep="grep --color=auto"
 alias mkdir="mkdir -p"
 alias mv="mv -i"
-alias rm="rm -iR"
+alias rm="rm -iR --one-file-system"
 alias tree="tree -L 2 -d -C"
 alias free="free -h"
 alias df="df -h"
@@ -36,6 +36,7 @@ if check exa; then
     alias ls="exa --color auto"
     alias l="exa -a"
     alias ll="exa -l -b --git -s modified"
+    alias llr="exa -l -b --git -s modified -r"
 else
     alias l="ls -a"
     alias ll="ls -l"
@@ -74,4 +75,4 @@ alias zload=". $ZDOTDIR/.zshrc"
 
 #-- Misc. --#
 alias ncmpcpp="ncmpcpp -c ~/.config/ncmpcpp/config"
-alias tmuxr="tmux attach"
+alias rt="tmux new-session -A -s main"
