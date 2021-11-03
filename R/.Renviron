@@ -1,2 +1,4 @@
+_R_SHLIB_STRIP_ = true
+_R_USE_PIPEBIND_ = true
 R_LIBS_USER = ~/Rlibs
 LANG = "en"

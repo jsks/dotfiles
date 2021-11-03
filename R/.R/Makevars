@@ -1,7 +1,0 @@
-CFLAGS += -march=native -O3 -pipe
-CXXFLAGS += -march=native -O3 -pipe
-
-CXX98FLAGS += -march=native -O3 -pipe
-CXX11FLAGS += -march=native -O3 -pipe
-CXX14FLAGS += -march=native -O3 -pipe
-CXX17FLAGS += -march=native -O3 -pipe
