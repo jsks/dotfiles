@@ -78,12 +78,14 @@
 (define-key minibuffer-local-isearch-map (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key [escape] 'keyboard-quit)
 
+(setq native-comp-async-report-warnings-errors nil)
+
 ;;; use-package
 (require 'package)
 
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
+(setq package-native-compile t)
 (package-initialize)
 
 (unless (package-installed-p 'use-package)

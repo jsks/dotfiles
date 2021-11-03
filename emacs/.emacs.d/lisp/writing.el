@@ -36,7 +36,6 @@ using 'org-agenda' and 'I'."
       (message "Can't clock-in outside org-mode"))))
 
 (use-package org
-  :ensure org-plus-contrib
   :hook (org-mode . (lambda ()
                       (auto-fill-mode t)
                       (org-indent-mode t)
@@ -60,6 +59,8 @@ using 'org-agenda' and 'I'."
             "ot" 'org-todo
             "oq" 'org-set-tags-command
             "ow" 'org-refile)
+           (:states 'normal
+            "<tab>" 'org-cycle)
           (:keymap 'org-agenda-mode-map
            :states 'motion
             "@" 'org-agenda-add-note)
@@ -132,10 +133,7 @@ using 'org-agenda' and 'I'."
   (add-hook 'diary-today-visible-calendar-hook 'calendar-mark-today)
 
   (setq-default prettify-symbols-alist
-                '(("#+TITLE:" . "∙")
-                  ("#+AUTHOR:" . "∶")
-                  ("#+ARCHIVE:" . "∴")
-                  ("#+OPTION:" . "∷")
+                '(("#+OPTION:" . "∷")
                   (":PROPERTIES:" . ":")
                   ("#+BEGIN_SRC" . "λ")
                   ("#+END_SRC" . "⋱")

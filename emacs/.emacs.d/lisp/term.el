@@ -10,7 +10,6 @@ vterm."
 
 ;; Finally, thank the Lord, a decent terminal
 (use-package vterm
-  :load-path "~/.emacs.d/local/emacs-libvterm"
   :commands vterm
   :init
   (evil-set-initial-state 'vterm-mode 'emacs)
