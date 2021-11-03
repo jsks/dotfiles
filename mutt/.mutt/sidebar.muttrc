@@ -9,7 +9,7 @@ color sidebar_new brightyellow default
 color sidebar_flagged red default
 color sidebar_unread blue default
 
-bind index,pager \CJ	sidebar-next
-bind index,pager \CK	sidebar-prev
+bind index,pager \CN	sidebar-next
+bind index,pager \CP	sidebar-prev
 bind index,pager \CO	sidebar-open
 bind index,pager <backtab> sidebar-toggle-visible
