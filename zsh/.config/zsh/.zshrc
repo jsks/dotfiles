@@ -19,7 +19,7 @@ SAVEHIST=20000
 
 #-- Some options --#
 # Changing directories
-setopt autocd pushdignoredups
+setopt autocd autopushd pushdignoredups
 
 # Expansion and globbing
 setopt extendedglob globdots nomatch
@@ -28,7 +28,7 @@ setopt extendedglob globdots nomatch
 setopt appendhistory histfcntllock histignorealldups histnofunctions histreduceblanks sharehistory
 
 # Input/Output
-setopt correct interactivecomments
+setopt correct correct_all interactivecomments
 
 # Job control
 setopt longlistjobs nohup notify
@@ -52,9 +52,6 @@ zstyle ':completion:*' cache-path ~/.config/zsh/cache
 # Don't complete entry on line multiple times for the following
 # commands
 zstyle ':completion:*:(rm|kill|diff):*' ignore-line yes
-
-# Rehash so that completion doesn't fail when new command added
-zstyle ':acceptline:*' rehash true
 
 # dircolors/LS_COLORS linux-only
 [[ $OSTYPE == linux* ]] && zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
