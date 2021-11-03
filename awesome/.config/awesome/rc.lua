@@ -46,8 +46,8 @@ end
 beautiful.init("/home/cloud/.config/awesome/theme/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "termite"
-browser = "chromium"
+terminal = "alacritty"
+browser = "chromium --force-device-scale-factor=1.25"
 editor = os.getenv("EDITOR") or "emacsclient -nw"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -233,10 +233,10 @@ globalkeys = awful.util.table.join(
               { description = "lua execute prompt", group = "awesome" }),
 
     -- Personal Keybindings
-    awful.key({ modkey, "Control" }, "f", function () awful.spawn("chromium") end,
+    awful.key({ modkey, "Control" }, "f", function () awful.spawn(browser) end,
         { description = "run chromium" }),
     awful.key({ modkey,           }, "x", function()
-        scratch.drop("termite", "top", "center", 0.65, 0.20, true) end,
+        scratch.drop("alacritty", "top", "center", 0.65, 0.20, true) end,
         { description = "dropdown terminal" }),
     awful.key({ modkey,           }, "e", function() awful.spawn("emacsclient -c") end,
         { description = "spawn emacs" })
@@ -285,13 +285,13 @@ for i = 1, 9 do
                         local tag = sharedtags[i]
                         local tagscreen = tag.screen
                         local screen = awful.screen.focused()
-                        
+
                         if tag then
                            local prevtag = tagscreen.selected_tag
                            awful.tag.setscreen(screen, tag)
                            awful.tag.history.update(tagscreen)
 
-                           
+
                            if tagscreen ~= screen and prevtag then
                               if prevtag == tag then
                                  if not tagscreen.selected_tag then
