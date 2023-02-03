@@ -8,6 +8,14 @@ function check {
     fi
 }
 
+function mkcd {
+    mkdir -p $@ && cd $_
+}
+
+function rmd {
+    Rscript -e "rmarkdown::render('$1', '${2:-pdf_document}')"
+}
+
 function o {
     if [[ $OSTYPE == darwin* ]] && whence open >/dev/null; then
         open $@[2,-1]

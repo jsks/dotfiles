@@ -18,6 +18,7 @@ alias tree="tree -L 2 -d -C"
 alias free="free -h"
 alias df="df -h"
 alias du="du -h"
+alias sizes="du -h -d 1 | sort -h"
 alias p="pushd"
 alias P="popd"
 alias wstrip="sed '/^#/d'"
@@ -33,10 +34,10 @@ alias gs="git status"
 #-- Non-Standard tools --#
 # Replace `ls`
 if check exa; then
-    alias ls="exa --color auto"
-    alias l="exa -a"
-    alias ll="exa -l -b --git -s modified"
-    alias llr="exa -l -b --git -s modified -r"
+    alias ls="exa --group-directories-first"
+    alias l="exa --group-directories-first -a"
+    alias ll="exa --group-directories-first -l --git -s modified"
+    alias llr="exa --group-directories-first -l --git -s modified -r"
 else
     alias l="ls -a"
     alias ll="ls -l"
@@ -70,9 +71,7 @@ alias -s {txt,conf,c,go,js,R,py}=$EDITOR
 
 #-- Reload Configs --#
 alias rdot="for i in ~/dotfiles/[a-z]*(/); stow -d ~/dotfiles -R ${i:t}"
-alias xrel="xrdb -load ~/.Xresources"
 alias zload=". $ZDOTDIR/.zshrc"
 
 #-- Misc. --#
-alias ncmpcpp="ncmpcpp -c ~/.config/ncmpcpp/config"
 alias rt="tmux new-session -A -s main"
