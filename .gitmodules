@@ -1,10 +1,10 @@
 [submodule "zsh/.config/zsh/scripts/zsh-plugins"]
     path = zsh/.config/zsh/scripts/zsh-plugins
     url = https://github.com/jsks/zsh-plugins.git
-[submodule "zsh/.config/zsh/scripts/zsh-hl"]
-	path = zsh/.config/zsh/scripts/zsh-hl
-	url = https://github.com/zsh-users/zsh-syntax-highlighting
 [submodule "tmux/.tmux/tmux-yank"]
 	path = tmux/.tmux/tmux-yank
 	url = https://github.com/tmux-plugins/tmux-yank
 	branch = master
+[submodule "zsh/.config/zsh/scripts/fzf-tab"]
+	path = zsh/.config/zsh/scripts/fzf-tab
+	url = git@github.com:Aloxaf/fzf-tab.git

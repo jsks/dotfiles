@@ -85,7 +85,7 @@ bindkey -a j history-beginning-search-forward
 . $ZDOTDIR/aliases
 . $ZDOTDIR/aliases_$HOST 2>/dev/null
 . $ZDOTDIR/scripts/zsh-plugins/zbk/zbk.zsh
-. $ZDOTDIR/scripts/zsh-hl/zsh-syntax-highlighting.zsh
+. /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 check fzf && {
     # ctrl-r is so awkward
