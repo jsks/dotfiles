@@ -1,0 +1,66 @@
+bar:
+  height: 26
+  location: top
+  font: Hack:pixelsize=15
+  spacing: 5
+  right-margin: 5
+  layer: bottom
+  foreground: F8F5E2FF
+  background: 514C4CFF
+
+  left:
+    - river:
+        anchors:
+          - base: &river_base
+              left-margin: 10
+              right-margin: 10
+              default: {string: {text: "{id}"}}
+              conditions:
+                id == 21: {empty: {}}
+        content:
+          map:
+            on-click: 
+              left: sh -c "riverctl set-focused-tags $((1 << ({id} - 1)))"
+              right: sh -c "riverctl toggle-focused-tags $((1 << ({id} -1)))"
+              middle: sh -c "riverctl toggle-view-tags $((1 << ({id} -1)))"
+            conditions:
+              state == invisible && ~occupied: {empty: {}}
+              state == invisible && occupied:
+                map:
+                  <<: *river_base
+              visible:
+                map:
+                  <<: *river_base
+                  foreground: 9FB5C2FF
+                  deco: {background: {color: FFFFFF10}}
+              urgent:
+                map:
+                  <<: *river_base
+                  deco: {background: {color: eb4d4bff}}
+
+  right:
+    - battery:
+        name: BAT0
+        content:
+          map:
+            default:
+              string: {text: "{capacity}%"}
+            conditions:
+              capacity < 20:
+                string: 
+                  text: "{capacity}%"
+                  foreground: BE7765FF
+              capacity < 5:
+                string:
+                  text: "{capacity}%"
+                  foreground: BE7765FF
+                  deco: {underline: {size: 3, color: ea6962ff}}
+              state == charging:
+                string: 
+                  text: "{capacity}%"
+                  foreground: 96BE65FF
+    - clock:
+        content:
+          string: 
+            text: "{time}"
+            foreground: 9FB5C2FF
