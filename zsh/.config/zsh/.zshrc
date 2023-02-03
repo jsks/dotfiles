@@ -10,8 +10,6 @@ fi
 export GOPATH=~/go
 export PATH="$HOME/bin:$PATH:$HOME/go/bin:$HOME/.npm/bin:$HOME/.cargo/bin:$HOME/.local/bin"
 
-fpath=(/usr/local/share/zsh-completions $fpath)
-
 #-- History --#
 HISTFILE=$ZDOTDIR/histfile
 HISTSIZE=20000
@@ -36,29 +34,32 @@ setopt longlistjobs nohup notify
 # Prompting
 setopt prompt_subst
 
+# Vim keybindings
 bindkey -v
 
 #-- zstyle comletions --#
-zstyle ':completion:*' completer _complete _ignored _match _correct _approximate
-zstyle ':completion:*' original false
-zstyle ':completion:*:match:*' original only
-
-zstyle ':completion:*:options' description 'yes'
-zstyle ':completion:*:options' auto-description '%d'
-
+zstyle ':completion:*' completer _extensions _complete  _approximate
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.config/zsh/cache
+
+zstyle ':completion:*:descriptions' format '-- %d --'
+zstyle ':completion:*:-tilde-:*' group-order named-directories path-directories users
+zstyle ':completion:*' group-name ''
+zstyle ':fzf-tab:*' switch-group ',' '.'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -al --group-directories-first $realpath'
+
 
 # Don't complete entry on line multiple times for the following
 # commands
 zstyle ':completion:*:(rm|kill|diff):*' ignore-line yes
 
-# dircolors/LS_COLORS linux-only
-[[ $OSTYPE == linux* ]] && zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:default' list-colors ''
 
 zstyle :compinstall filename "$ZDOTDIR/.zshrc"
 autoload -Uz compinit
 compinit
+
+# Use fzf for tab menu completion
+. $ZDOTDIR/scripts/fzf-tab/fzf-tab.plugin.zsh
 
 #-- Autoloads --#
 autoload -U colors && colors
@@ -93,6 +94,8 @@ check fzf && {
     . /usr/share/fzf/key-bindings.zsh
     bindkey "^[[Z" fzf-history-widget
 }
+
+. $HOME/.opam/opam-init/init.zsh
 
 #-- Prompt --#
 if [[ -z "$SSH_CLIENT" ]]; then
