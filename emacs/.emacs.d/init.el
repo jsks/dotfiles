@@ -3,6 +3,8 @@
 ;;; Display options
 (setq inhibit-startup-screen t)
 
+(setq default-frame-alist '((undecorated . t)))
+
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -158,6 +160,7 @@ Disables all enabled themes first before loading the target theme."
 ;; Workspace management
 (use-package perspective
   :diminish persp-mode
+  :custom (persp-mode-prefix-key (kbd "C-c M-p"))
   :general (:states 'normal
             :prefix "SPC"
             "p" '(:ignore t :which-key "perspective")
