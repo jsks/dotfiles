@@ -83,19 +83,20 @@ bindkey -a j history-beginning-search-forward
 
 #-- Source additional zfiles --#
 . $ZDOTDIR/functions
+. $ZDOTDIR/completions
 . $ZDOTDIR/aliases
 . $ZDOTDIR/aliases_$HOST 2>/dev/null
 . $ZDOTDIR/scripts/zsh-plugins/zbk/zbk.zsh
-. /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 check fzf && {
-    # ctrl-r is so awkward
     . /usr/share/fzf/completion.zsh
     . /usr/share/fzf/key-bindings.zsh
+
+    # ctrl-r is so awkward
     bindkey "^[[Z" fzf-history-widget
 }
 
-. $HOME/.opam/opam-init/init.zsh
+. /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 #-- Prompt --#
 if [[ -z "$SSH_CLIENT" ]]; then

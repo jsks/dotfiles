@@ -67,7 +67,7 @@ alias -s org='o $BROWSER'
 alias -s {png,jpg}='o sxiv'
 alias -s doc='o antiword'
 alias -s pdf='o zathura'
-alias -s {txt,conf,c,go,js,R,py}=$EDITOR
+alias -s {txt,conf,c,go,jl,js,R,py}=$EDITOR
 
 #-- Reload Configs --#
 alias rdot="for i in ~/dotfiles/[a-z]*(/); stow -d ~/dotfiles -R ${i:t}"

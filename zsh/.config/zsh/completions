@@ -1,0 +1,12 @@
+# -*- mode: sh -*-
+
+_fzf_complete_man() {
+    _fzf_complete --preview='man $(tr -d "()" <<< {2}) {1}'  \
+        --nth="..2" \
+        --tiebreak="chunk" \
+        -- "$@" < <(man -k .)
+}
+
+_fzf_complete_man_post() {
+    awk '{gsub("[()]", "", $2); print $1 "." $2}'
+}

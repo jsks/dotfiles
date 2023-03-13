@@ -42,18 +42,16 @@ function extract {
     esac
 }
 
-function gitignore {
+function gi {
+    if ! git rev-parse --is-inside-work-tree 2>/dev/null; then
+        print -Pu 2 "$0: %~/ is not a git directory"
+        return 1
+    fi
+
     setopt local_options hist_subst_pattern
     local git_dir=$(git rev-parse --show-toplevel)
 
     [[ -d $git_dir ]] && print ${(F)@:a:s/$git_dir\///} >> $git_dir/.gitignore
-}
-
-function qsync {
-    git add -A
-    git commit -m "Sync"
-
-    git push
 }
 
 function rr {
