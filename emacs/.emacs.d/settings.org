@@ -1,0 +1,787 @@
+#+TITLE: Emacs Config
+#+PROPERTY: header-args:elisp :lexical t
+
+* General Settings
+
+** Display
+
+Create a minimal look by disabling the startup welcome screen,
+vertical scroll bar, and menu/toolbar.
+
+The menu bar contents can always be accessed with =<F10>=.
+
+#+begin_src emacs-lisp
+  (setq inhibit-startup-screen t)
+
+  (setq default-frame-alist '((undecorated . t)))
+
+  (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+  (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+  (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+
+#+end_src
+
+*** Cursor
+
+Highlight current line globally for all buffers. Disable cursor
+blinking, and highlight matching parentheses at point.
+
+#+begin_src emacs-lisp
+  (global-hl-line-mode)
+  (blink-cursor-mode 0)
+  (show-paren-mode)
+#+end_src
+
+*** Font
+
+Set the default font to Hack.
+
+#+begin_src emacs-lisp
+  (add-to-list 'default-frame-alist '(font . "Roboto Mono"))
+#+end_src
+
+*** Fringe
+
+Increase the fringe for git-gutter.
+
+#+begin_src emacs-lisp
+  (fringe-mode '(15 . 15))
+#+end_src
+
+*** Modeline
+
+Display current column's value next to the line number.
+
+#+begin_src emacs-lisp
+  (setq column-number-mode t)
+#+end_src
+
+
+** Editing
+
+Always use spaces for indent rather than =\t=.
+
+#+begin_src emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+end_src
+
+
+Use the =<tab>= key to either indent when at the start of a line or
+trigger =completion-at-point=.
+
+#+begin_src emacs-lisp
+  (setq tab-always-indent 'complete)
+#+end_src
+
+
+Cleanup whitespace problems in buffer before saving.
+
+#+begin_src emacs-lisp
+  (add-hook 'before-save-hook 'whitespace-cleanup)
+#+end_src
+
+Backup files before editing in a single shared directory. Note,
+numbered backups is not enabled by default, so only a single backup is
+maintained every time a buffer is opened for a file.
+
+#+begin_src emacs-lisp
+  (setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
+#+end_src
+
+
+** Minibuffer
+
+Kill the minibuffer when we lose focus by clicking on another buffer.
+
+#+begin_src emacs-lisp
+  ;; http://trey-jackson.blogspot.com/2010/04/emacs-tip-36-abort-minibuffer-when.html
+  (defun stop-using-minibuffer ()
+    "Autokill minibuffer."
+    (when (and (>= (recursion-depth) 1) (active-minibuffer-window))
+      (abort-recursive-edit)))
+
+  (add-hook 'mouse-leave-buffer-hook 'stop-using-minibuffer)
+#+end_src
+
+Use =<escape>= to kill the echo-area buffer as much as possible rather
+than having to resort to =C-g= or =C-]=. In addition, set =<escape>= to
+behave somewhat similarly to =C-g= by globally binding it to
+=keyboard-quit= --- note, don't set it to =keyboard-escape-quit= since
+this will replicate the default triple =<escape>= behaviour and close
+the current window.
+
+#+begin_src emacs-lisp
+  (define-key minibuffer-local-map [escape] 'keyboard-escape-quit)
+  (define-key minibuffer-local-ns-map [escape] 'keyboard-escape-quit)
+  (define-key minibuffer-local-completion-map [escape] 'keyboard-escape-quit)
+  (define-key minibuffer-local-must-match-map [escape] 'keyboard-escape-quit)
+  (define-key minibuffer-local-isearch-map [escape] 'keyboard-escape-quit)
+
+  (global-set-key [escape] 'keyboard-quit)
+#+end_src
+
+
+** Misc
+
+Allow yes or no prompts to be answered with a single character.
+
+#+begin_src emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+Disable bell.
+
+#+begin_src emacs-lisp
+  (setq ring-bell-function 'ignore)
+
+#+end_src
+
+** Startup
+
+Set initial buffer to the primary notes file.
+
+#+begin_src emacs-lisp
+  (setq initial-buffer-choice "~/notes/n.org")
+#+end_src
+
+Additional scratch buffers should be empty and set to the generic
+=text-mode=, as opposed to the default =emacs-lisp-mode=, since I'll
+usually change it to whatever language I'm currently working with.
+
+#+begin_src emacs-lisp
+  (setq initial-scratch-message nil)
+  (setq initial-major-mode 'text-mode)
+#+end_src
+
+
+** Remote Editing
+
+Default method for transferring files with TRAMP.
+
+#+begin_src emacs-lisp
+  (setq-default tramp-default-method "ssh")
+#+end_src
+
+* Packages
+
+Add the MELPA package repository for expanded access to additional
+packages. Note, =(< emacs-major-version 27)= requires an additional call
+to =package-initialize.=
+
+#+begin_src emacs-lisp
+  (require 'package)
+
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+#+end_src
+
+Ensure that packages are auto-installed at startup.
+
+#+begin_src emacs-lisp
+  (setq use-package-always-ensure t)
+#+end_src
+
+Enable native compilation of installed packages.
+
+#+begin_src emacs-lisp
+  (setq package-native-compile t)
+#+end_src
+
+Suppress the =*Warnings*= buffer from popping up due to native-comp.
+
+#+begin_src emacs-lisp
+  (setq native-comp-async-report-warnings-errors 'silent)
+#+end_src
+
+Allow hiding minor modes from modeline.
+
+#+begin_src emacs-lisp
+  (use-package diminish
+   :ensure t)
+  (eval-after-load "eldoc"
+    '(diminish 'eldoc-mode))
+  (eval-after-load "undo-tree"
+    '(diminish 'undo-tree-mode))
+#+end_src
+
+
+** Keybindings
+
+Introduce vim keybindings and switch out isearch to get slightly
+closer to vim.
+
+#+begin_src emacs-lisp
+  (use-package evil
+    :init
+    (setq evil-search-module 'evil-search)
+    (evil-mode t)
+    :hook (git-commit-mode . evil-insert-state))
+#+end_src
+
+Displays current pressed prefix and available keys.
+
+#+begin_src emacs-lisp
+  (use-package which-key
+    :diminish which-key-mode
+    :config
+    ;; Too slow by default
+    (setq which-key-idle-delay 0.2)
+    (which-key-mode))
+#+end_src
+
+General makes defining keybindings easy.
+
+#+begin_src emacs-lisp
+  (use-package general)
+#+end_src
+
+
+*** Apps
+
+#+begin_src emacs-lisp
+  (general-define-key
+   :keymaps 'normal
+   :prefix "SPC"
+   "a"  '(:ignore t :which-key "apps")
+   "aC" 'calc-dispatch
+   "ad" 'dired
+   "ao" 'org-agenda
+   "ap" 'proced
+   "aP" 'list-processes
+   "au" 'undo-tree-visualize)
+#+end_src
+
+*** Buffer Management
+
+#+begin_src emacs-lisp
+(general-define-key
+ :keymaps 'normal
+ :prefix "SPC"
+ "b"  '(:ignore t :which-key "buffers")
+ "bc" 'clean-buffer-list
+ "bd" 'kill-this-buffer
+ "be" 'safe-erase-buffer
+ "bK" 'kill-other-buffers
+ "bn" 'next-buffer
+ "bp" 'previous-buffer
+ "bR" 'save-revert-buffer
+ "bw" 'read-only-mode)
+#+end_src
+
+*** File Management
+
+#+begin_src emacs-lisp
+  (general-define-key
+   :keymaps 'normal
+   :prefix "SPC"
+   "f"  '(:ignore t :which-key "files")
+   "ff" 'find-file
+   "fD" 'delete-current-buffer-file
+   "fE" 'sudo-edit
+   "fR" 'rename-current-buffer-file
+   "fs" 'evil-write-all)
+#+end_src
+
+*** Line Movement
+
+#+begin_src emacs-lisp
+  (general-define-key
+   :keymaps 'text-mode-map
+   :states '(visual motion)
+   "j" 'evil-next-visual-line
+   "k" 'evil-previous-visual-line
+   "$" 'evil-end-of-visual-line)
+
+  ;; Line wrap in text-mode
+  (add-hook 'text-mode-hook #'turn-on-visual-line-mode)
+#+end_src
+
+*** Narrow/numbers
+
+#+begin_src emacs-lisp
+  (general-define-key
+   :keymaps 'normal
+   :prefix "SPC"
+   "n"  '(:ignore t :which-key "narrow/numbers")
+   "n+" 'evil-numbers-increase
+   "n-" 'evil-numbers-decrease
+   "nf" 'narrow-to-defun
+   "np" 'narrow-to-region
+   "nw" 'widen)
+#+end_src
+
+*** Toggle
+
+#+begin_src emacs-lisp
+  (general-define-key
+   :keymaps 'normal
+   :prefix "SPC"
+   "t" '(:ignore t :which-key "toggle")
+   "tv" 'toggle-truncate-lines)
+#+end_src
+
+*** Window Management
+
+By default, =C-h= is the prefix for help commands. Overriding this is
+not great, but it can always be access with =<F1>=.
+
+#+begin_src emacs-lisp
+  (general-define-key
+   :keymaps 'normal
+   :prefix "SPC"
+   "w"  '(:ignore t :which-key "windows")
+   "w-" 'split-window-below
+   "w/" 'split-window-right
+   "w=" 'balance-windows
+   "wc" 'delete-window
+   "wf" 'toggle-frame-fullscreen
+   "wh" 'evil-window-move-far-left
+   "wj" 'evil-window-move-very-top
+   "wk" 'evil-window-move-very-top
+   "wl" 'evil-window-move-far-right
+   "wm" 'maximize-buffer
+   "wR" 'rotate-windows)
+
+  (general-define-key
+   "C-j" 'evil-window-down
+   "C-k" 'evil-window-up
+   "C-l" 'evil-window-right
+   "C-h" 'evil-window-left)
+#+end_src
+
+
+** Themes
+
+Use a custom function instead of consult-theme in order to reset the
+fringe every time a new theme is loaded so that it shares the same
+background color.
+
+#+begin_src emacs-lisp
+(defun cloud/xtheme (theme)
+  "Custom wrapper to 'load-theme' THEME.
+Disables all enabled themes first before loading the target theme."
+  (interactive
+   (list
+    (intern (completing-read "Load custom theme: "
+                             (mapc #'symbol-name (custom-available-themes))))))
+  (mapc #'disable-theme custom-enabled-themes)
+  (load-theme theme t)
+
+  ;; Ensure fringe is always the same color as our buffer bg
+  (set-face-attribute 'fringe nil :background nil))
+
+(general-define-key
+  :keymaps 'normal
+  :prefix "SPC"
+  "tt" 'cloud/xtheme)
+#+end_Src
+
+#+begin_src emacs-lisp
+  (use-package color-theme-sanityinc-tomorrow)
+  (use-package kaolin
+    :init (cloud/xtheme 'kaolin-light))
+#+end_src
+
+Use a more aesthetic modeline.
+
+#+begin_src emacs-lisp
+  (use-package nerd-icons
+    :init (setq nerd-icons-scale-factor 1.2))
+  (use-package doom-modeline
+    :init (doom-modeline-mode t)
+    :config (setq doom-modeline-height 30))
+#+end_src
+
+** Completion
+
+Minimal completion UI. =vertico-posframe= extends vertico to use a
+[[https://github.com/tumashu/posframe][posframe]] for the popup.
+
+#+begin_src emacs-lisp
+  (use-package vertico
+    :general
+    (:keymaps 'vertico-map "<backtab>" 'backward-kill-word)
+    :init (vertico-mode)
+    :config
+    (setq vertico-count 20)
+    (setq vertico-resize t))
+
+  (use-package vertico-posframe
+    :after vertico
+    :init (vertico-posframe-mode t))
+#+end_src
+
+Notations for candidate selections in vertico.
+
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :init (marginalia-mode))
+#+end_src
+
+Consult provides search and navigation commands.
+
+#+begin_src emacs-lisp
+  (use-package consult
+    :general
+    (:states 'normal
+     :prefix "SPC"
+     "bb" 'consult-buffer
+     "fa" 'consult-ripgrep
+     "fp" 'consult-find))
+#+end_src
+
+Corfu provides in buffer completion similar to =company-mode=.
+
+#+begin_src emacs-lisp
+  (use-package corfu
+    :init
+    (global-corfu-mode))
+#+end_src
+
+Show auto-suggestions while typing.
+
+#+begin_src emacs-lisp
+(use-package corfu-candidate-overlay
+  :after corfu
+  :config
+  (corfu-candidate-overlay-mode t))
+#+end_src
+
+Finally, completion style allows flex-style fuzzy matching. Use
+=<space>= to back reference matches, *i.e.* being able to match from the
+beginning of a candidate string.
+
+
+#+begin_src emacs-lisp
+  (use-package orderless
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion))))
+    (orderless-matching-styles '(orderless-flex orderless-literal)))
+#+end_src
+
+** Writing
+
+Enable spell checking using aspell.
+
+#+begin_src emacs-lisp
+  (use-package flyspell
+    :ensure f
+    :diminish (flyspell-mode . " α")
+    :hook (text-mode . flyspell-mode)
+    :config
+    (setq-default ispell-program-name "aspell"
+                  ispell-list-command "--list"))
+#+end_src
+
+Minimal, focused writing mode.
+
+#+begin_src emacs-lisp
+  (use-package olivetti
+    :after org
+    :hook (org-mode . olivetti-mode)
+    :custom (olivetti-body-width 80)
+    :general (:states 'normal
+              :prefix "SPC"
+              "tw" 'olivetti-mode))
+
+#+end_src
+
+Major mode for markdown documents.
+
+#+begin_src  emacs-lisp
+(use-package markdown-mode
+   :mode (("README\\.md" . gfm-mode)
+          ("\\.[R]md" . markdown-mode))
+   :init (setq markdown-command "pandoc"))
+#+end_src
+
+Replace DocView for viewing PDF files.
+
+#+begin_src emacs-lisp
+(use-package pdf-tools
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-page))
+#+end_src
+
+*** Org-mode
+
+Org-mode settings, comments inline.
+
+#+begin_src emacs-lisp
+    (use-package org
+      :hook (org-mode . (lambda ()
+                          (auto-fill-mode t))) ; Break lines automatically
+
+      :general
+      (:states '(normal visual)
+       :prefix "SPC"
+       "o" '(:ignore t :which-key "org-mode")
+       "ao" 'org-agenda
+       "o@" 'org-add-note
+       "o$" 'org-archive-subtree
+       "oc" 'org-capture
+       "od" 'org-deadline
+       "oi" 'org-insert-link-global
+       "ol" 'org-store-link
+       "op" 'org-set-property
+       "os" 'org-schedule
+       "ot" 'org-todo
+       "oq" 'org-set-tags-command
+       "ow" 'org-refile)
+      (:states 'normal "<tab>" 'org-cycle)
+      (:keymap 'org-agenda-mode-map
+       :states 'motion
+       "@" 'org-agenda-add-note)
+
+      :init
+      ;; Vertically align indentation
+      (setq org-startup-indented t)
+
+      :config
+      (setq org-cycle-emulate-tab 'whitestart)
+
+      ;; Native code fontification
+      (setq org-src-fontify-natively t
+            org-src-tab-acts-natively t
+            org-src-preserve-indentation t)
+
+      ;; Extend header theming to the entire line
+      (setq org-fontify-whole-heading-line t)
+
+      ;; Don't expand topics when opening file
+      (setq org-startup-folded t)
+
+      ;; Space b/w collapsed headers
+      (setq org-cycle-separator-lines 1)
+
+      ;; Render latex snippets as svg for retina
+      (setq org-latex-create-formula-image-program 'dvisvgm)
+
+       ;; Symbol indicating hidden content
+      (setq org-ellipsis " ⇣"
+            org-pretty-entities t
+            org-hide-emphasis-markers t))
+#+end_src
+
+Beautify org-mode, similar to the older =org-bullets= package, and add
+minor mode to fix surrounding header title at top. Note, load
+org-modern /after/ org-indent-mode *not* org-mode since source block
+indentation breaks otherwise.
+
+#+begin_src emacs-lisp
+(use-package org-modern
+  :hook ((org-mode . org-modern-mode)
+         (org-agenda-finalize . org-modern-mode)))
+
+(use-package org-sticky-header
+  :hook (org-mode . org-sticky-header-mode))
+#+end_src
+
+
+ Notational velocity like file search through org-mode notes.
+
+#+begin_src emacs-lisp
+  (use-package deft
+    :general (:states 'normal
+              :prefix "SPC"
+              "fn" 'deft)
+    :config
+    (setq deft-extensions '("org")
+          deft-directory "~/notes"
+          deft-use-filename-as-title t))
+#+end_src
+
+** Version Control
+
+#+begin_src emacs-lisp
+(use-package magit
+  :general
+  (:states 'normal
+   :prefix "SPC"
+   "g" '(:ignore t :which-key "magit")
+   "gg" 'magit-status
+   "gp" 'magit-dispatch))
+#+end_src
+
+Mark git line changes in the window fringe.
+
+#+begin_src emacs-lisp
+  (use-package git-gutter-fringe
+    :diminish git-gutter-mode
+    :init (global-git-gutter-mode))
+#+end_src
+
+** Workspace Management
+
+#+begin_src emacs-lisp
+  (use-package perspective
+  :diminish persp-mode
+  :custom (persp-mode-prefix-key (kbd "C-c M-p"))
+  :general (:states 'normal
+            :prefix "SPC"
+            "p" '(:ignore t :which-key "perspective")
+            "ps" 'persp-switch
+            "pk" 'persp-remove-buffer
+            "pc" 'persp-kill
+            "pr" 'persp-rename
+            "pa" 'persp-add-buffer
+            "pA" 'persp-set-buffer
+            "pI" 'persp-import
+            "pn" 'persp-next
+            "pp" 'persp-prev)
+  :config
+  (persp-mode))
+#+end_src
+
+** Terminal
+
+Finally, thank the Lord, a decent terminal.
+
+#+begin_src emacs-lisp
+(use-package vterm
+  :commands vterm
+  :init
+  (evil-set-initial-state 'vterm-mode 'emacs)
+  (setq vterm-keymap-exceptions
+        '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o"
+          "M-v" "C-y" "C-j" "C-k" "C-l")))
+
+#+end_src
+
+** Programming
+
+Color delimiters according to depth with =rainbow-delimiters-mode=, and highlight parentheses surrounding point with =highlight-parentheses-mode=.
+
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+
+  (use-package highlight-parentheses
+    :diminish highlight-parentheses-mode
+    :hook (prog-mode . highlight-parentheses-mode))
+#+end_src
+
+
+*** Docker
+#+begin_src emacs-lisp
+(use-package dockerfile-mode
+   :mode ("Dockerfile\\'" . dockerfile-mode))
+#+end_src
+
+*** Julia
+
+#+begin_src emacs-lisp
+(use-package julia-mode)
+(use-package julia-repl
+   :after vterm
+   :hook (julia-mode . julia-repl-mode)
+   :init (setenv "JULIA_NUM_THREADS" "8")
+   :config (julia-repl-set-terminal-backend 'vterm))
+
+#+end_src
+
+
+Configures eglot for the julia language server. Note, may require
+increasing =eglot-connect-timeout= on first run when installing =SymbolServer.jl=.
+
+#+begin_src emacs-lisp
+(use-package eglot-jl
+   :after julia-mode
+   :hook (julia-mode . eglot-jl-init))
+#+end_src
+
+
+*** Polymode
+
+Multiple major modes inside a single buffer. Enabled for Rmarkdown and
+org-mode files.
+
+#+begin_src emacs-lisp
+(use-package poly-org)
+(use-package poly-markdown
+   :mode ("\\.Rmd" . poly-markdown-mode))
+#+end_src
+
+*** R
+
+Command interpreter settings to define behaviour at R
+prompt. Notably, set =<up>= and =<down>= to scroll back/forward through
+prompt history and set prompt to read-only to prevent deletion of
+previous input/output.
+
+#+begin_src emacs-lisp
+(eval-after-load "comint"
+  '(progn
+     (define-key comint-mode-map [up]
+                 'comint-previous-matching-input-from-input)
+     (define-key comint-mode-map [down]
+                 'comint-next-matching-input-from-input)
+
+     ;; Behave like terminal, don't modify comint buffer
+     (setq comint-prompt-read-only t)
+
+     (setq comint-scroll-to-bottom-on-input t
+           comint-scroll-to-bottom-on-output t
+           comint-scroll-show-maximum-output t
+           comint-move-point-for-output t)))
+#+end_src
+
+Should I be using eglot?
+
+#+begin_src emacs-lisp
+(use-package ess
+  :init (require 'ess-site)
+  :commands R
+  :general
+  (:states 'insert
+            :keymaps '(ess-mode-map inferior-ess-mode-map)
+            ";" 'ess-insert-assign)
+  (:states 'normal
+           :prefix "SPC"
+           "e" '(:ignore t :which-key "ESS")
+           "ei" 'R
+           "ed" 'ess-rdired)
+  :config
+  (defun local-ess-settings ()
+    ;; You really don't want this enabled. Disable indenting comments
+    ;; based on how many leading characters. This needs to be a hook
+    ;; since it's buffer specific.
+    (setq ess-indent-with-fancy-comments nil)
+
+    ;; Auto append newline after opening brace
+    (electric-layout-mode))
+  (add-hook 'ess-mode-hook #'local-ess-settings)
+
+  (defun local-inferior-ess-settings ()
+    ;; Make the read-only comint prompt play nicer with evil-mode
+    (setq-local comint-use-prompt-regexp nil)
+    (setq-local inhibit-field-text-motion nil))
+  (add-hook 'inferior-ess-mode-hook #'local-inferior-ess-settings)
+
+  ;; Save all history into a single file
+  (setq ess-history-file "~/.R/history")
+
+  (setq ess-nuke-trailing-whitespace-p t
+        ess-style 'C++))
+#+end_src
+
+*** Racket
+
+#+begin_src emacs-lisp
+(use-package racket-mode
+   :general
+   (:keymaps 'racket-mode-map
+    "C-c C-c" 'racket-send-region
+    "C-c C-r" 'racket-run-module-at-point))
+#+end_src
+
+* Customize Options
+
+#+begin_src emacs-lisp
+(setq custom-file "~/.emacs.d/custom.el")
+(unless (file-exists-p custom-file)
+  (with-temp-buffer (write-file custom-file)))
+
+(load custom-file)
+#+end_src

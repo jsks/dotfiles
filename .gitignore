@@ -1,5 +1,6 @@
 emacs/.emacs.d/*
 !emacs/.emacs.d/init.el
+!emacs/.emacs.d/settings.org
 !emacs/.emacs.d/lisp
 mutt/.mutt/*
 !mutt/.mutt/sidebar.muttrc
