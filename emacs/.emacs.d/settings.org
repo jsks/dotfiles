@@ -400,6 +400,7 @@ Use a more aesthetic modeline.
     :config (setq doom-modeline-height 30))
 #+end_src
 
+
 ** Completion
 
 Minimal completion UI. =vertico-posframe= extends vertico to use a
@@ -665,6 +666,7 @@ Mark git line changes in the window fringe.
     :init (global-git-gutter-mode))
 #+end_src
 
+
 ** Workspace Management
 
 #+begin_src emacs-lisp
@@ -687,6 +689,7 @@ Mark git line changes in the window fringe.
   (persp-mode))
 #+end_src
 
+
 ** Terminal
 
 Finally, thank the Lord, a decent terminal.
@@ -695,12 +698,14 @@ Finally, thank the Lord, a decent terminal.
 (use-package vterm
   :commands vterm
   :init
-  (evil-set-initial-state 'vterm-mode 'emacs)
+  (evil-set-initial-state 'vterm-mode 'insert)
+  (setq vterm-kill-buffer-on-exit t)
   (setq vterm-keymap-exceptions
         '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o"
           "M-v" "C-y" "C-j" "C-k" "C-l")))
 
 #+end_src
+
 
 ** Programming
 
