@@ -68,8 +68,16 @@ zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' unstagedstr  "*"
 zstyle ':vcs_info:git:*' stagedstr  "+"
-zstyle ':vcs_info:*' formats "%b%u%c "
+zstyle ':vcs_info:*' formats "%b%u%c%m "
 zstyle ':vcs_info:*' actionformats "%b|%a%u%c "
+
+zstyle ':vcs_info:git*+set-message:*' hooks untracked-files
+
++vi-untracked-files() {
+    if [[ -n $(git ls-files --others --exclude-standard) ]]; then
+        hook_com[misc]='?'
+    fi
+}
 
 zmodload -i zsh/complist
 
