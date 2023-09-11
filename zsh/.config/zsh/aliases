@@ -28,16 +28,17 @@ alias ga="git add"
 alias gd="git diff"
 alias gl="git log --graph --oneline --format='%C(yellow)%h%Creset%C(auto)%d%Creset %s %C(cyan)(%an, %ar)%Creset'"
 alias gm="git commit -m"
+alias gpl="git pull"
 alias gp="git push"
 alias gs="git status"
 
 #-- Non-Standard tools --#
 # Replace `ls`
-if check exa; then
-    alias ls="exa --group-directories-first"
-    alias l="exa --group-directories-first -a"
-    alias ll="exa --group-directories-first -l --git -s modified"
-    alias llr="exa --group-directories-first -l --git -s modified -r"
+if check eza; then
+    alias ls="eza --group-directories-first"
+    alias l="eza --group-directories-first -a"
+    alias ll="eza --group-directories-first --icons -l --git -s modified"
+    alias llr="eza --group-directories-first --icons -l --git -s modified -r"
 else
     alias l="ls -a"
     alias ll="ls -l"
