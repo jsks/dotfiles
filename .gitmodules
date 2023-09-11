@@ -8,3 +8,6 @@
 [submodule "zsh/.config/zsh/scripts/fzf-tab"]
 	path = zsh/.config/zsh/scripts/fzf-tab
 	url = git@github.com:Aloxaf/fzf-tab.git
+[submodule "tmux/.tmux/tmux-extrakto"]
+	path = tmux/.tmux/tmux-extrakto
+	url = git@github.com:laktak/extrakto.git
