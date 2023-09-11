@@ -822,7 +822,7 @@ Should I be using eglot?
   (add-hook 'inferior-ess-mode-hook #'local-inferior-ess-settings)
 
   ;; Save all history into a single file
-  (setq ess-history-file "~/.R/history")
+  (setq ess-history-file "~/.R/.Rhistory")
 
   (setq ess-nuke-trailing-whitespace-p t
         ess-style 'C++))

@@ -8,8 +8,7 @@ mutt/.mutt/*
 !mutt/.mutt/mailcap
 ncmpcpp/.config/ncmpcpp/config.orig
 ncmpcpp/.config/ncmpcpp/error.log
-R/.R/.Rhistory
-R/.R/lintr_cache/
+R/.R/*
 scripts/bin/flash
 scripts/bin/texcount.pl
 vim/.vim/backup/
