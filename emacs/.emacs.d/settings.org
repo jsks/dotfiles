@@ -423,11 +423,17 @@ Minimal completion UI. =vertico-posframe= extends vertico to use a
     :init (vertico-posframe-mode t))
 #+end_src
 
-Notations for candidate selections in vertico.
+Notations for candidate selections in vertico with nerd-icons.
 
 #+begin_src emacs-lisp
   (use-package marginalia
     :init (marginalia-mode))
+
+  (use-package nerd-icons-completion
+    :after marginalia
+    :config
+     (nerd-icons-completion-mode)
+     (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 #+end_src
 
 Consult provides search and navigation commands.
@@ -474,16 +480,14 @@ beginning of a candidate string.
 
 ** Writing
 
-Enable spell checking using aspell.
+Enable spell checking using aspell. Significantly faster than flyspell.
 
 #+begin_src emacs-lisp
-  (use-package flyspell
-    :ensure f
-    :diminish (flyspell-mode . " α")
-    :hook (text-mode . flyspell-mode)
+  (use-package wucuo
+    :hook (text-mode . wucuo-start)
     :config
     (setq-default ispell-program-name "aspell"
-                  ispell-list-command "--list"))
+                  ispell-extra-args '("--lang=en_US")))
 #+end_src
 
 Minimal, focused writing mode.
