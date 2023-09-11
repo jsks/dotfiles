@@ -46,6 +46,10 @@ bar:
             default:
               string: {text: "{capacity}%"}
             conditions:
+              state == charging:
+                string:
+                  text: "{capacity}%"
+                  foreground: 96BE65FF
               capacity < 20:
                 string: 
                   text: "{capacity}%"
@@ -55,10 +59,6 @@ bar:
                   text: "{capacity}%"
                   foreground: BE7765FF
                   deco: {underline: {size: 3, color: ea6962ff}}
-              state == charging:
-                string: 
-                  text: "{capacity}%"
-                  foreground: 96BE65FF
     - clock:
         content:
           string: 
