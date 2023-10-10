@@ -508,9 +508,16 @@ Major mode for markdown documents.
 #+begin_src  emacs-lisp
 (use-package markdown-mode
    :mode (("README\\.md" . gfm-mode)
-          ("\\.[R]md" . markdown-mode))
+          ("\\.md" . markdown-mode))
    :init (setq markdown-command "pandoc"))
 #+end_src
+
+Quarto replaces Rmarkdown.
+
+#+begin_src emacs-lisp
+  (use-package quarto-mode)
+#+end_src
+
 
 Replace DocView for viewing PDF files.
 
