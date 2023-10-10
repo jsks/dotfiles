@@ -32,19 +32,20 @@ default_border pixel 5
 
 ###
 # Output
-output * {
+output eDP-1 {
     bg ~/wall/4swnuoujfbk41.jpg fill
-    scale 1
+    scale 1.7
 }
 
 ###
 # Input
-input * {
+input type:keyboard {
+    repeat_delay 300
     xkb_layout us,se
-    xkb_options "altwin:swap_alt_win,caps:escape,grp:alt_shift_toggle"
+    xkb_options "caps:escape,grp:alt_shift_toggle"
 }
 
-input "1267:47:Elan_Touchpad" {
+input type:touchpad {
     click_method clickfinger
     dwt enabled
     natural_scroll enabled
@@ -112,6 +113,11 @@ bindsym $mod+Shift+3 move container to workspace number 3
 bindsym $mod+Shift+4 move container to workspace number 4
 bindsym $mod+Shift+5 move container to workspace number 5
 bindsym $mod+Shift+6 move container to workspace number 6
+
+###
+# Multiple monitors
+bindsym $mod+o focus output right
+bindsym $mod+Period move workspace output right
 
 ###
 # Layout stuff:
