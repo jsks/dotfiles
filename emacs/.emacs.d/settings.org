@@ -452,18 +452,11 @@ Corfu provides in buffer completion similar to =company-mode=.
 
 #+begin_src emacs-lisp
   (use-package corfu
+    :custom (corfu-auto t)
     :init
     (global-corfu-mode))
 #+end_src
 
-Show auto-suggestions while typing.
-
-#+begin_src emacs-lisp
-(use-package corfu-candidate-overlay
-  :after corfu
-  :config
-  (corfu-candidate-overlay-mode t))
-#+end_src
 
 Finally, completion style allows flex-style fuzzy matching. Use
 =<space>= to back reference matches, *i.e.* being able to match from the
