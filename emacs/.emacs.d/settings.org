@@ -44,6 +44,13 @@ Highlight current line for programming buffers. Disable cursor blinking, and hig
   (show-paren-mode)
 #+end_src
 
+Enable pixel-based scrolling and allow scrolling to "drift" after stopping.
+
+#+begin_src emacs-lisp
+(pixel-scroll-precision-mode)
+(setq pixel-scroll-precision-use-momentum t)
+#+end_src
+
 *** Font
 
 Set the default font.
