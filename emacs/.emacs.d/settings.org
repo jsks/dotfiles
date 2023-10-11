@@ -732,6 +732,20 @@ Color delimiters according to depth with =rainbow-delimiters-mode=, and highligh
 #+end_src
 
 
+*** Tree-sitter
+
+Tree-sitter support was added to Emacs 29.1; however, the language grammars still need to be manually installed. `treesit-auto` will automatically install and set `*-ts-mode` as the preferred major mode if supported.
+
+#+begin_src emacs-lisp
+(use-package treesit-auto
+  :demand t
+  :config
+  (setq treesit-auto-install 'prompt)
+  (global-treesit-auto-mode))
+
+#+end_src
+
+
 *** Docker
 #+begin_src emacs-lisp
 (use-package dockerfile-mode
@@ -741,10 +755,11 @@ Color delimiters according to depth with =rainbow-delimiters-mode=, and highligh
 *** Julia
 
 #+begin_src emacs-lisp
-(use-package julia-mode)
+(use-package julia-ts-mode
+  :mode "\\.jl$")
 (use-package julia-repl
    :after vterm
-   :hook (julia-mode . julia-repl-mode)
+   :hook (julia-ts-mode . julia-repl-mode)
    :init (setenv "JULIA_NUM_THREADS" "8")
    :config (julia-repl-set-terminal-backend 'vterm))
 
@@ -756,8 +771,8 @@ increasing =eglot-connect-timeout= on first run when installing =SymbolServer.jl
 
 #+begin_src emacs-lisp
 (use-package eglot-jl
-   :after julia-mode
-   :hook (julia-mode . eglot-jl-init))
+   :after julia-ts-mode
+   :hook (julia-ts-mode . eglot-jl-init))
 #+end_src
 
 
