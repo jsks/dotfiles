@@ -858,11 +858,6 @@ Should I be using eglot?
 *** Copilot
 
 #+begin_src emacs-lisp
-  (defun cloud/complete ()
-    (interactive)
-    (or (copilot-accept-completion)
-        (indent-for-tab-command)))
-
   (use-package editorconfig)
   (use-package copilot
     :requires (dash s editorconfig)
@@ -871,8 +866,8 @@ Should I be using eglot?
     :general
     (:states 'insert
              :keymaps 'copilot-mode-map
-             "<tab>" 'cloud/complete
-             "<backtab>" 'copilot-accept-completion-by-line)
+             "<backtab>" 'copilot-accept-completion
+             "C-<tab>" 'copilot-accept-completion-by-line)
     :config
     (setq evil-complete-next-func 'copilot-complete-next
           evil-complete-previous-func 'copilot-complete-previous))
