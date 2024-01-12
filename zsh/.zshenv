@@ -24,9 +24,8 @@ export LESS="-Frs --mouse"
 export BROWSER="firefox"
 export NOCOLOR_PIPE=1
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
-export MAILDIR="~/mail"
 export MOZ_ENABLE_WAYLAND=1
-export MOZ_DISABLE_RDD_SANDBOX=1
+export JULIA_NUM_THREADS="auto"
 
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
