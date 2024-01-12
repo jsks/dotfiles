@@ -807,8 +807,13 @@ package manager.
     :mode "\\.jl$")
 
   (use-package julia-repl
-     :hook (julia-ts-mode . julia-repl-mode)
-     :config (julia-repl-set-terminal-backend 'vterm))
+    :general
+    (:states 'normal
+     :prefix "SPC"
+     "j" '(:ignore t :which-key "julia")
+     "ji" 'julia-repl)
+    :hook (julia-ts-mode . julia-repl-mode)
+    :config (julia-repl-set-terminal-backend 'vterm))
 #+end_src
 
 Configure eglot for the julia language server. Note, may require
