@@ -816,9 +816,16 @@ increasing =eglot-connect-timeout= on first run when installing =SymbolServer.jl
 alternatively run =julia --project=<...> <...>/eglot-jl.jl= in a terminal.
 
 #+begin_src emacs-lisp
+  ;; Disable flymake for julia since there's way too many linting false positives.
+  (add-hook 'eglot-managed-mode-hook
+            (lambda () (and (eq major-mode 'julia-ts-mode) (flymake-mode -1))))
+
   (use-package eglot-jl
      :after julia-ts-mode
-     :hook (julia-ts-mode . eglot-jl-init))
+     :hook
+     (julia-ts-mode . eglot-jl-init)
+     (julia-ts-mode . eglot-ensure))
+
 #+end_src
 
 *** Polymode
