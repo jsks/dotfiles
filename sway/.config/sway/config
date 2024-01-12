@@ -16,8 +16,7 @@ set $term alacritty
 set $menu wofi --show run
 
 # Volume/Brightness display
-set $WOBSOCK $XDG_RUNTIME_DIR/wob.sock
-exec ([[ -p $WOBSOCK ]] || mkfifo $WOBSOCK) && tail -f $WOBSOCK | wob
+exec avizo-service
 
 # Wayland notifications
 exec mako
@@ -34,7 +33,7 @@ default_border pixel 5
 # Output
 output eDP-1 {
     bg ~/wall/4swnuoujfbk41.jpg fill
-    scale 1.7
+    scale 1
 }
 
 ###
@@ -42,7 +41,7 @@ output eDP-1 {
 input type:keyboard {
     repeat_delay 300
     xkb_layout us,se
-    xkb_options "caps:escape,grp:alt_shift_toggle"
+    xkb_options "altwin:swap_alt_win,caps:escape,grp:alt_shift_toggle"
 }
 
 input type:touchpad {
@@ -78,13 +77,13 @@ bindsym $mod+Ctrl+r reload
 bindsym $mod+Shift+q exit
 
 # Volume control
-bindsym XF86AudioRaiseVolume exec change_vol +2 > $WOBSOCK
-bindsym XF86AudioLowerVolume exec change_vol -2 > $WOBSOCK
-bindsym XF86AudioMute exec change_vol toggle > $WOBSOCK
+bindsym XF86AudioRaiseVolume exec volumectl -u up
+bindsym XF86AudioLowerVolume exec volumectl -u down
+bindsym XF86AudioMute exec volumectl toggle-mute
 
 # Brightness control
-bindsym XF86MonBrightnessUp exec change_brightness +5 > $WOBSOCK
-bindsym XF86MonBrightnessDown exec change_brightness -5 > $WOBSOCK
+bindsym XF86MonBrightnessUp exec lightctl up
+bindsym XF86MonBrightnessDown exec lightctl down
 
 ###
 # Moving around:
