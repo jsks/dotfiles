@@ -1,5 +1,6 @@
 #+TITLE: Emacs Config
 #+PROPERTY: header-args:elisp :lexical t
+#+STARTUP: show2levels
 
 * Issues
 :PROPERTIES:
@@ -47,8 +48,8 @@ Highlight current line for programming buffers. Disable cursor blinking, and hig
 Enable pixel-based scrolling and allow scrolling to "drift" after stopping.
 
 #+begin_src emacs-lisp
-(pixel-scroll-precision-mode)
-(setq pixel-scroll-precision-use-momentum t)
+ (pixel-scroll-precision-mode)
+ (setq pixel-scroll-precision-use-momentum t)
 #+end_src
 
 *** Font
@@ -84,14 +85,12 @@ Always use spaces for indent rather than =\t=.
   (setq-default indent-tabs-mode nil)
 #+end_src
 
-
 Use the =<tab>= key to either indent when at the start of a line or
 trigger =completion-at-point=.
 
 #+begin_src emacs-lisp
   (setq tab-always-indent 'complete)
 #+end_src
-
 
 Cleanup whitespace problems in buffer before saving.
 
@@ -106,7 +105,6 @@ maintained every time a buffer is opened for a file.
 #+begin_src emacs-lisp
   (setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
 #+end_src
-
 
 ** Minibuffer
 
@@ -151,7 +149,6 @@ Disable bell.
 
 #+begin_src emacs-lisp
   (setq ring-bell-function 'ignore)
-
 #+end_src
 
 ** Startup
@@ -220,7 +217,6 @@ Allow hiding minor modes from modeline.
     '(diminish 'undo-tree-mode))
 #+end_src
 
-
 ** Keybindings
 
 Introduce vim keybindings and switch out isearch to get slightly
@@ -269,23 +265,33 @@ General makes defining keybindings easy.
 *** Buffer Management
 
 #+begin_src emacs-lisp
-(general-define-key
- :keymaps 'normal
- :prefix "SPC"
- "b"  '(:ignore t :which-key "buffers")
- "bc" 'clean-buffer-list
- "bd" 'kill-this-buffer
- "be" 'safe-erase-buffer
- "bK" 'kill-other-buffers
- "bn" 'next-buffer
- "bp" 'previous-buffer
- "bR" 'save-revert-buffer
- "bw" 'read-only-mode)
+  (general-define-key
+   :keymaps 'normal
+   :prefix "SPC"
+   "b"  '(:ignore t :which-key "buffers")
+   "bc" 'clean-buffer-list
+   "bd" 'kill-this-buffer
+   "be" 'safe-erase-buffer
+   "bK" 'kill-other-buffers
+   "bn" 'next-buffer
+   "bp" 'previous-buffer
+   "bR" 'save-revert-buffer
+   "bw" 'read-only-mode)
 #+end_src
 
 *** File Management
 
 #+begin_src emacs-lisp
+  (defun cloud/open-config-file ()
+    "Edit settings.org"
+    (interactive)
+    (find-file (expand-file-name "settings.org" user-emacs-directory)))
+
+  (defun cloud/reload-config ()
+    "Reload emac init file"
+    (interactive)
+    (load-file user-init-file))
+
   (general-define-key
    :keymaps 'normal
    :prefix "SPC"
@@ -294,6 +300,8 @@ General makes defining keybindings easy.
    "fD" 'delete-current-buffer-file
    "fE" 'sudo-edit
    "fR" 'rename-current-buffer-file
+   "fr" 'cloud/reload-config
+   "fc" 'cloud/open-config-file
    "fs" 'evil-write-all)
 #+end_src
 
@@ -367,28 +375,28 @@ not great, but it can always be access with =<F1>=.
 
 ** Themes
 
-Use a custom function instead of consult-theme in order to reset the
+Use a custom function instead of =consult-theme= in order to reset the
 fringe every time a new theme is loaded so that it shares the same
 background color.
 
 #+begin_src emacs-lisp
-(defun cloud/xtheme (theme)
-  "Custom wrapper to 'load-theme' THEME.
-Disables all enabled themes first before loading the target theme."
-  (interactive
-   (list
-    (intern (completing-read "Load custom theme: "
-                             (mapc #'symbol-name (custom-available-themes))))))
-  (mapc #'disable-theme custom-enabled-themes)
-  (load-theme theme t)
+  (defun cloud/xtheme (theme)
+    "Custom wrapper to 'load-theme' THEME.
+     Disables all enabled themes first before loading the target theme."
+    (interactive
+     (list
+      (intern (completing-read "Load custom theme: "
+                               (mapc #'symbol-name (custom-available-themes))))))
+    (mapc #'disable-theme custom-enabled-themes)
+    (load-theme theme t)
 
-  ;; Ensure fringe is always the same color as our buffer bg
-  (set-face-attribute 'fringe nil :background nil))
+    ;; Ensure fringe is always the same color as our buffer bg
+    (set-face-attribute 'fringe nil :background nil))
 
-(general-define-key
-  :keymaps 'normal
-  :prefix "SPC"
-  "tt" 'cloud/xtheme)
+  (general-define-key
+   :keymaps 'normal
+   :prefix "SPC"
+   "tt" 'cloud/xtheme)
 #+end_Src
 
 #+begin_src emacs-lisp
@@ -452,23 +460,53 @@ Consult provides search and navigation commands.
      :prefix "SPC"
      "bb" 'consult-buffer
      "fa" 'consult-ripgrep
-     "fp" 'consult-find))
+     "fp" 'consult-find
+     "oh" 'consult-org-heading))
 #+end_src
 
-Corfu provides in buffer completion similar to =company-mode=.
+Corfu provides in buffer completion similar to =company-mode=. Note, I'm using =<backtab>= to both cycle through corfu completion candidates and to accept a copilot suggestion --- for the latter see the [[*Local Packages][Local Packages]] section.
 
 #+begin_src emacs-lisp
+  (defun cloud/copilot-or-corfu-previous ()
+    "Triggers corfu-previous in completion menu, otherwise
+     copilot-accept-completion."
+    (interactive)
+    (if (and (bound-and-true-p corfu-mode)
+                (frame-live-p corfu--frame)
+                (frame-visible-p corfu--frame))
+        (corfu-previous)
+      (copilot-accept-completion)))
+
   (use-package corfu
-    :custom (corfu-auto t)
+    :general
+    (:keymaps 'corfu-map
+              "<tab>" 'corfu-next
+              "<backtab>" 'cloud/copilot-or-corfu-previous)
+
+    :custom
+    (corfu-count 15)
+    (corfu-cycle t)
+    (corfu-min-width 20)
+    (corfu-preselect 'prompt)
+    (corfu-popupinfo-delay '(0.4 . 0.2))
+
+    :config
+    ;; Quit completion pop-up with ESC. Copied from evil-collection
+    (evil-define-key 'insert corfu-map (kbd "<escape>") 'corfu-quit)
+    (advice-add 'corfu--setup :after (lambda (&rest _) (evil-normalize-keymaps)))
+    (advice-add 'corfu--teardown :after (lambda (&rest _) (evil-normalize-keymaps)))
+
+    ;; Don't quit corfu when invoking custom command
+    (add-to-list 'corfu-continue-commands 'cloud/copilot-or-corfu-previous)
+
     :init
-    (global-corfu-mode))
+    (global-corfu-mode)
+    (corfu-popupinfo-mode))
 #+end_src
 
-
-Finally, completion style allows flex-style fuzzy matching. Use
+Finally, completion style allowing flex-style fuzzy matching. Use
 =<space>= to back reference matches, *i.e.* being able to match from the
 beginning of a candidate string.
-
 
 #+begin_src emacs-lisp
   (use-package orderless
@@ -506,10 +544,10 @@ Minimal, focused writing mode.
 Major mode for markdown documents.
 
 #+begin_src  emacs-lisp
-(use-package markdown-mode
-   :mode (("README\\.md" . gfm-mode)
-          ("\\.md" . markdown-mode))
-   :init (setq markdown-command "pandoc"))
+  (use-package markdown-mode
+     :mode (("README\\.md" . gfm-mode)
+            ("\\.md" . markdown-mode))
+     :init (setq markdown-command "pandoc"))
 #+end_src
 
 Quarto replaces Rmarkdown.
@@ -518,14 +556,13 @@ Quarto replaces Rmarkdown.
   (use-package quarto-mode)
 #+end_src
 
-
 Replace DocView for viewing PDF files.
 
 #+begin_src emacs-lisp
-(use-package pdf-tools
-  :config
-  (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-page))
+  (use-package pdf-tools
+    :config
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-page))
 #+end_src
 
 *** Org-mode
@@ -643,8 +680,7 @@ indentation breaks otherwise.
   :hook (org-mode . org-sticky-header-mode))
 #+end_src
 
-
- Notational velocity like file search through org-mode notes.
+Notational velocity like file search through org-mode notes.
 
 #+begin_src emacs-lisp
   (use-package deft
@@ -717,7 +753,6 @@ Finally, thank the Lord, a decent terminal.
 
 #+end_src
 
-
 ** Programming
 
 Color delimiters according to depth with =rainbow-delimiters-mode=, and highlight parentheses surrounding point with =highlight-parentheses-mode=.
@@ -737,44 +772,45 @@ Color delimiters according to depth with =rainbow-delimiters-mode=, and highligh
 Tree-sitter support was added to Emacs 29.1; however, the language grammars still need to be manually installed. `treesit-auto` will automatically install and set `*-ts-mode` as the preferred major mode if supported.
 
 #+begin_src emacs-lisp
-(use-package treesit-auto
-  :demand t
-  :config
-  (setq treesit-auto-install 'prompt)
-  (global-treesit-auto-mode))
+  (use-package treesit-auto
+    :demand t
+    :config
+    (setq treesit-auto-install 'prompt)
+    (global-treesit-auto-mode))
 
 #+end_src
 
-
 *** Docker
+
 #+begin_src emacs-lisp
-(use-package dockerfile-mode
-   :mode ("Dockerfile\\'" . dockerfile-mode))
+  (use-package dockerfile-mode
+     :mode ("Dockerfile\\'" . dockerfile-mode))
 #+end_src
 
 *** Julia
 
-#+begin_src emacs-lisp
-(use-package julia-ts-mode
-  :mode "\\.jl$")
-(use-package julia-repl
-   :after vterm
-   :hook (julia-ts-mode . julia-repl-mode)
-   :init (setenv "JULIA_NUM_THREADS" "8")
-   :config (julia-repl-set-terminal-backend 'vterm))
-
-#+end_src
-
-
-Configures eglot for the julia language server. Note, may require
-increasing =eglot-connect-timeout= on first run when installing =SymbolServer.jl=.
+Julia bundles a number of different libraries by default. To prevent clashes
+with system libs, always install julia using =juliaup= rather than through our
+package manager.
 
 #+begin_src emacs-lisp
-(use-package eglot-jl
-   :after julia-ts-mode
-   :hook (julia-ts-mode . eglot-jl-init))
+  (use-package julia-ts-mode
+    :mode "\\.jl$")
+
+  (use-package julia-repl
+     :hook (julia-ts-mode . julia-repl-mode)
+     :config (julia-repl-set-terminal-backend 'vterm))
 #+end_src
 
+Configure eglot for the julia language server. Note, may require
+increasing =eglot-connect-timeout= on first run when installing =SymbolServer.jl=,
+alternatively run =julia --project=<...> <...>/eglot-jl.jl= in a terminal.
+
+#+begin_src emacs-lisp
+  (use-package eglot-jl
+     :after julia-ts-mode
+     :hook (julia-ts-mode . eglot-jl-init))
+#+end_src
 
 *** Polymode
 
@@ -782,9 +818,9 @@ Multiple major modes inside a single buffer. Enabled for Rmarkdown and
 org-mode files.
 
 #+begin_src emacs-lisp
-(use-package poly-org)
-(use-package poly-markdown
-   :mode ("\\.Rmd" . poly-markdown-mode))
+  (use-package poly-org)
+  (use-package poly-markdown
+    :mode ("\\.Rmd" . poly-markdown-mode))
 #+end_src
 
 *** R
@@ -795,74 +831,76 @@ prompt history and set prompt to read-only to prevent deletion of
 previous input/output.
 
 #+begin_src emacs-lisp
-(eval-after-load "comint"
-  '(progn
-     (define-key comint-mode-map [up]
-                 'comint-previous-matching-input-from-input)
-     (define-key comint-mode-map [down]
-                 'comint-next-matching-input-from-input)
+  (eval-after-load "comint"
+    '(progn
+       (define-key comint-mode-map [up]
+                   'comint-previous-matching-input-from-input)
+       (define-key comint-mode-map [down]
+                   'comint-next-matching-input-from-input)
 
-     ;; Behave like terminal, don't modify comint buffer
-     (setq comint-prompt-read-only t)
+       ;; Behave like terminal, don't modify comint buffer
+       (setq comint-prompt-read-only t)
 
-     (setq comint-scroll-to-bottom-on-input t
-           comint-scroll-to-bottom-on-output t
-           comint-scroll-show-maximum-output t
-           comint-move-point-for-output t)))
+       (setq comint-scroll-to-bottom-on-input t
+             comint-scroll-to-bottom-on-output t
+             comint-scroll-show-maximum-output t
+             comint-move-point-for-output t)))
 #+end_src
 
 Should I be using eglot?
 
 #+begin_src emacs-lisp
-(use-package ess
-  :init (require 'ess-site)
-  :commands R
-  :general
-  (:states 'insert
-            :keymaps '(ess-mode-map inferior-ess-mode-map)
-            ";" 'ess-insert-assign)
-  (:states 'normal
-           :prefix "SPC"
-           "e" '(:ignore t :which-key "ESS")
-           "ei" 'R
-           "ed" 'ess-rdired)
-  :config
-  (defun local-ess-settings ()
-    ;; You really don't want this enabled. Disable indenting comments
-    ;; based on how many leading characters. This needs to be a hook
-    ;; since it's buffer specific.
-    (setq ess-indent-with-fancy-comments nil)
+  (use-package ess
+    :init (require 'ess-site)
+    :commands R
+    :general
+    (:states 'insert
+              :keymaps '(ess-mode-map inferior-ess-mode-map)
+              ";" 'ess-insert-assign)
+    (:states 'normal
+             :prefix "SPC"
+             "e" '(:ignore t :which-key "ESS")
+             "ei" 'R
+             "ed" 'ess-rdired)
+    :config
+    (defun local-ess-settings ()
+      ;; You really don't want this enabled. Disable indenting comments
+      ;; based on how many leading characters. This needs to be a hook
+      ;; since it's buffer specific.
+      (setq ess-indent-with-fancy-comments nil)
 
-    ;; Auto append newline after opening brace
-    (electric-layout-mode))
-  (add-hook 'ess-mode-hook #'local-ess-settings)
+      ;; Auto append newline after opening brace
+      (electric-layout-mode))
+    (add-hook 'ess-mode-hook #'local-ess-settings)
 
-  (defun local-inferior-ess-settings ()
-    ;; Make the read-only comint prompt play nicer with evil-mode
-    (setq-local comint-use-prompt-regexp nil)
-    (setq-local inhibit-field-text-motion nil))
-  (add-hook 'inferior-ess-mode-hook #'local-inferior-ess-settings)
+    (defun local-inferior-ess-settings ()
+      ;; Make the read-only comint prompt play nicer with evil-mode
+      (setq-local comint-use-prompt-regexp nil)
+      (setq-local inhibit-field-text-motion nil))
+    (add-hook 'inferior-ess-mode-hook #'local-inferior-ess-settings)
 
-  ;; Save all history into a single file
-  (setq ess-history-file "~/.R/.Rhistory")
+    ;; Save all history into a single file
+    (setq ess-history-file "~/.R/.Rhistory")
 
-  (setq ess-nuke-trailing-whitespace-p t
-        ess-style 'C++))
+    (setq ess-nuke-trailing-whitespace-p t
+          ess-style 'C++))
 #+end_src
 
 *** Racket
 
 #+begin_src emacs-lisp
-(use-package racket-mode
-   :general
-   (:keymaps 'racket-mode-map
-    "C-c C-c" 'racket-send-region
-    "C-c C-r" 'racket-run-module-at-point))
+  (use-package racket-mode
+     :general
+     (:keymaps 'racket-mode-map
+      "C-c C-c" 'racket-send-region
+      "C-c C-r" 'racket-run-module-at-point))
 #+end_src
 
 ** Local Packages
 
 *** Copilot
+
+Github copilot suggestions.
 
 #+begin_src emacs-lisp
   (use-package editorconfig)
@@ -872,8 +910,8 @@ Should I be using eglot?
     :hook (prog-mode . copilot-mode)
     :general
     (:states 'insert
-             :keymaps 'copilot-mode-map
-             "<backtab>" 'copilot-accept-completion
+     :keymaps 'copilot-mode-map
+             "<backtab>" 'cloud/copilot-or-corfu-previous
              "C-<tab>" 'copilot-accept-completion-by-line)
     :config
     (setq evil-complete-next-func 'copilot-complete-next
@@ -883,9 +921,9 @@ Should I be using eglot?
 * Customize Options
 
 #+begin_src emacs-lisp
-(setq custom-file "~/.emacs.d/custom.el")
-(unless (file-exists-p custom-file)
-  (with-temp-buffer (write-file custom-file)))
+  (setq custom-file "~/.emacs.d/custom.el")
+  (unless (file-exists-p custom-file)
+    (with-temp-buffer (write-file custom-file)))
 
-(load custom-file)
+  (load custom-file)
 #+end_src
