@@ -1,0 +1,33 @@
+[colors.cursor]
+cursor = "CellForeground"
+text = "CellBackground"
+
+[colors.primary]
+background = "#2F2F2F"
+bright_foreground = "#eaeaea"
+dim_foreground = "#828482"
+foreground = "#C5C8C6"
+
+[font]
+size = 12.0
+
+[font.bold]
+family = "Hack"
+style = "Bold"
+
+[font.bold_italic]
+family = "Hack"
+style = "Bold Italic"
+
+[font.italic]
+family = "Hack"
+style = "Italic"
+
+[font.normal]
+family = "Hack"
+
+[mouse]
+hide_when_typing = true
+
+[window]
+decorations = "none"
