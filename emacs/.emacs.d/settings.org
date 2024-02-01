@@ -550,9 +550,19 @@ Major mode for markdown documents.
      :init (setq markdown-command "pandoc"))
 #+end_src
 
-Quarto replaces Rmarkdown.
+Polymode allows multiple major modes within a file and Quarto replaces Rmarkdown.
 
 #+begin_src emacs-lisp
+  (use-package poly-org)
+  (use-package poly-markdown
+    :mode ("\\.Rmd" . poly-markdown-mode)
+    :config
+    ;; treesit-auto doesn't support poly-markdown-mode, so make sure
+    ;; we override with the treesitter versions for the following
+    ;; major modes. Note: this will also be inherited by `quarto-mode`.
+    (add-to-list 'polymode-mode-name-aliases '(julia . julia-ts-mode))
+    (add-to-list 'polymode-mode-name-aliases '(python . python-ts-mode)))
+
   (use-package quarto-mode)
 #+end_src
 
@@ -831,17 +841,6 @@ alternatively run =julia --project=<...> <...>/eglot-jl.jl= in a terminal.
      (julia-ts-mode . eglot-jl-init)
      (julia-ts-mode . eglot-ensure))
 
-#+end_src
-
-*** Polymode
-
-Multiple major modes inside a single buffer. Enabled for Rmarkdown and
-org-mode files.
-
-#+begin_src emacs-lisp
-  (use-package poly-org)
-  (use-package poly-markdown
-    :mode ("\\.Rmd" . poly-markdown-mode))
 #+end_src
 
 *** R
