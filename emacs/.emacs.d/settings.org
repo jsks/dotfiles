@@ -57,7 +57,7 @@ Enable pixel-based scrolling and allow scrolling to "drift" after stopping.
 Set the default font.
 
 #+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(font . "Roboto Mono"))
+  (add-to-list 'default-frame-alist '(font . "Iosevka-14"))
 #+end_src
 
 *** Fringe
@@ -814,6 +814,7 @@ package manager.
 
 #+begin_src emacs-lisp
   (use-package julia-ts-mode
+    :load-path "local/julia-ts-mode"
     :mode "\\.jl$")
 
   (use-package julia-repl
@@ -936,6 +937,13 @@ Github copilot suggestions.
     :config
     (setq evil-complete-next-func 'copilot-complete-next
           evil-complete-previous-func 'copilot-complete-previous))
+#+end_src
+
+*** Stan
+
+#+begin_src emacs-lisp
+  (use-package stan-ts-mode
+     :load-path "local/stan-ts-mode")
 #+end_src
 
 * Customize Options
