@@ -5,5 +5,6 @@ options(defaultPackages = c(getOption("defaultPackages"), "dplyr"))
 options(Ncpus = parallel::detectCores() - 2)
 options(max.print = 300)
 options(menu.graphics = F)
-options(repos = c(CRAN = "https://cloud.r-project.org"))
+options(repos = c(CRAN = "https://cloud.r-project.org",
+                  STAN = "https://stan-dev.r-universe.dev"))
 options(browser = "firefox")
