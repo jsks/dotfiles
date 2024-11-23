@@ -21,6 +21,7 @@ zsh/.config/zsh/.zcompdump
 zsh/.config/zsh/aliases_*
 zsh/.config/zsh/bookmarks
 zsh/.config/zsh/histfile
+zsh/.config/zsh/.zcompcache
 
 **/node_modules
 **/\#*\#
