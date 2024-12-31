@@ -14,3 +14,12 @@
 [submodule "emacs/.emacs.d/local/copilot.el"]
 	path = emacs/.emacs.d/local/copilot.el
 	url = git@github.com:zerolfx/copilot.el
+[submodule "emacs/.emacs.d/local/ajrepl"]
+	path = emacs/.emacs.d/local/ajrepl
+	url = git@github.com:sogaiu/ajrepl
+[submodule "emacs/.emacs.d/local/janet-ts-mode"]
+	path = emacs/.emacs.d/local/janet-ts-mode
+	url = git@github.com:sogaiu/janet-ts-mode
+[submodule "emacs/.emacs.d/local/julia-ts-mode"]
+	path = emacs/.emacs.d/local/julia-ts-mode
+	url = git@github.com:dhanak/julia-ts-mode
