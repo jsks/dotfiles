@@ -790,11 +790,14 @@ Show eldoc strings in a child frame directly at point.
 
 Tree-sitter support was added to Emacs 29.1; however, the language grammars still need to be manually installed. `treesit-auto` will automatically install and set `*-ts-mode` as the preferred major mode if supported.
 
+Also, =treesit-auto= has the wrong =:lang= for Janet.
+
 #+begin_src emacs-lisp
   (use-package treesit-auto
     :demand t
     :config
     (setq treesit-auto-install 'prompt)
+    (delete 'janet treesit-auto-langs)
     (global-treesit-auto-mode))
 
 #+end_src
@@ -804,6 +807,20 @@ Tree-sitter support was added to Emacs 29.1; however, the language grammars stil
 #+begin_src emacs-lisp
   (use-package dockerfile-mode
      :mode ("Dockerfile\\'" . dockerfile-mode))
+#+end_src
+
+*** Janet
+
+Note, =janet-ts-mode= requires the treesitter [[https://github.com/sogaiu/tree-sitter-janet-simple][grammar]] installed as =janet-simple=.
+
+#+begin_src emacs-lisp
+  (use-package janet-ts-mode
+    :load-path "local/janet-ts-mode")
+
+  (use-package ajrepl
+    :after janet-ts-mode
+    :load-path "local/ajrepl"
+    :hook (janet-ts-mode . ajrepl-interaction-mode))
 #+end_src
 
 *** Julia
