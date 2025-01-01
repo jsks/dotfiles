@@ -405,17 +405,6 @@ background color.
     :init (cloud/xtheme 'kaolin-light))
 #+end_src
 
-Use a more aesthetic modeline.
-
-#+begin_src emacs-lisp
-  (use-package nerd-icons
-    :init (setq nerd-icons-scale-factor 1.2))
-  (use-package doom-modeline
-    :init (doom-modeline-mode t)
-    :config (setq doom-modeline-height 30))
-#+end_src
-
-
 ** Completion
 
 Minimal completion UI. =vertico-posframe= extends vertico to use a
