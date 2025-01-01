@@ -11,9 +11,6 @@
 [submodule "tmux/.tmux/tmux-extrakto"]
 	path = tmux/.tmux/tmux-extrakto
 	url = git@github.com:laktak/extrakto.git
-[submodule "emacs/.emacs.d/local/copilot.el"]
-	path = emacs/.emacs.d/local/copilot.el
-	url = git@github.com:zerolfx/copilot.el
 [submodule "emacs/.emacs.d/local/ajrepl"]
 	path = emacs/.emacs.d/local/ajrepl
 	url = git@github.com:sogaiu/ajrepl

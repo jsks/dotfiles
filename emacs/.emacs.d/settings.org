@@ -924,10 +924,7 @@ Should I be using eglot?
 Github copilot suggestions.
 
 #+begin_src emacs-lisp
-  (use-package editorconfig)
   (use-package copilot
-    :requires (dash s editorconfig)
-    :load-path "local/copilot.el"
     :hook (prog-mode . copilot-mode)
     :general
     (:states 'insert
