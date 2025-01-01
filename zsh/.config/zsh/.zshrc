@@ -119,4 +119,12 @@ precmd() {
 
 PROMPT='%{$fg[blue]%}%n %{$reset_color%}» %{$fg[white]%}%m%{$reset_color%}$SSH_PROMPT » %{$fg[red]%}%~
 %{$fg[cyan]%}${vcs_info_msg_0_}% %{$fg[magenta]%}λ '
-RPROMPT="%{$(echotc UP 1)%}%{$fg[blue]%}%T%{$reset_color%}%{$(echotc DO 1)%}"
+
+#-- Emacs EAT integration --#
+if [[ -n "$EAT_SHELL_INTEGRATION_DIR" ]]; then
+    source "$EAT_SHELL_INTEGRATION_DIR/zsh"
+else
+    RPROMPT="%{$(echotc UP 1)%}%{$fg[blue]%}%T%{$reset_color%}%{$(echotc DO 1)%}"
+fi
+
+

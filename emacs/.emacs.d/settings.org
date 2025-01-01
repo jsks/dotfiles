@@ -744,18 +744,20 @@ Mark git line changes in the window fringe.
 
 ** Terminal
 
-Finally, thank the Lord, a decent terminal.
+Line-mode with eat plays better with evil than vterm.
 
 #+begin_src emacs-lisp
-(use-package vterm
-  :commands vterm
-  :init
-  (evil-set-initial-state 'vterm-mode 'insert)
-  (setq vterm-kill-buffer-on-exit t)
-  (setq vterm-keymap-exceptions
-        '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o"
-          "M-v" "C-y" "C-j" "C-k" "C-l")))
-
+  (use-package eat
+    :config
+    (setq eat-enable-auto-line-mode t)
+    (setq eat-enable-shell-prompt-annotation nil)
+    :general
+    (:keymaps 'eat-line-mode-map
+              "<backtab>" 'eat-line-find-input)
+    (:states 'insert
+             :keymaps 'eat-line-mode-map
+             "<up>" 'eat-line-previous-input
+             "<down>" 'eat-line-next-input))
 #+end_src
 
 ** Programming
@@ -836,7 +838,7 @@ package manager.
      "j" '(:ignore t :which-key "julia")
      "ji" 'julia-repl)
     :hook (julia-ts-mode . julia-repl-mode)
-    :config (julia-repl-set-terminal-backend 'vterm))
+    :config (julia-repl-set-terminal-backend 'eat))
 #+end_src
 
 Configure eglot for the julia language server. Note, may require
