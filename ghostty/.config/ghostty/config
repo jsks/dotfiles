@@ -1,0 +1,8 @@
+background = 2F2F2F
+foreground = C5C8C6
+window-decoration = false
+mouse-hide-while-typing = true
+copy-on-select = clipboard
+cursor-style-blink = false
+shell-integration-features = no-cursor,no-title
+
