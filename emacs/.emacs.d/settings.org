@@ -15,6 +15,10 @@ Setting latexpreview on by default absolutely kills emacs since each fragment is
 
 Currently, '/' in evil-mode is unable to search content beneath collapsed headings in org-mode. See the following github issue [[https://github.com/emacs-evil/evil/issues/1630][#1630]]
 
+** TODO Treesit and Emacs 30
+
+Is treesit-auto necessary anymore?
+
 * General Settings
 
 ** Display
@@ -397,7 +401,9 @@ background color.
    :keymaps 'normal
    :prefix "SPC"
    "tt" 'cloud/xtheme)
-#+end_Src
+#+end_src
+
+I like light themes for daytime.
 
 #+begin_src emacs-lisp
   (use-package color-theme-sanityinc-tomorrow)
@@ -943,6 +949,8 @@ Github copilot suggestions.
 #+end_src
 
 *** Stan
+
+Use the following treesitter [[https://github.com/WardBrian/tree-sitter-stan][grammar]].
 
 #+begin_src emacs-lisp
   (use-package stan-ts-mode
