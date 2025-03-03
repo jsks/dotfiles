@@ -271,7 +271,7 @@ General makes defining keybindings easy.
    :prefix "SPC"
    "b"  '(:ignore t :which-key "buffers")
    "bc" 'clean-buffer-list
-   "bd" 'kill-this-buffer
+   "bd" '(lambda () (interactive) (kill-buffer (current-buffer)))
    "be" 'safe-erase-buffer
    "bK" 'kill-other-buffers
    "bn" 'next-buffer
