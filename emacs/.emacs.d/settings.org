@@ -155,6 +155,14 @@ Disable bell.
   (setq ring-bell-function 'ignore)
 #+end_src
 
+Display current pressed prefix and available keys.
+
+#+begin_src emacs-lisp
+  ;; Too slow by default
+  (setq which-key-idle-delay 0.2)
+  (which-key-mode)
+#+end_src
+
 ** Startup
 
 Set initial buffer to the primary notes file.
@@ -232,17 +240,6 @@ closer to vim.
     (setq evil-search-module 'evil-search)
     (evil-mode t)
     :hook (git-commit-mode . evil-insert-state))
-#+end_src
-
-Displays current pressed prefix and available keys.
-
-#+begin_src emacs-lisp
-  (use-package which-key
-    :diminish which-key-mode
-    :config
-    ;; Too slow by default
-    (setq which-key-idle-delay 0.2)
-    (which-key-mode))
 #+end_src
 
 General makes defining keybindings easy.
