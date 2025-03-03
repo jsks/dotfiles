@@ -573,6 +573,7 @@ Org-mode settings, comments inline.
 
 #+begin_src emacs-lisp
   (use-package org
+    :hook (org-capture-mode . evil-insert-state)
     :general
     (:states '(normal visual)
      :prefix "SPC"
@@ -580,6 +581,7 @@ Org-mode settings, comments inline.
              "ao" 'org-agenda
              "o@" 'org-add-note
              "o$" 'org-archive-subtree
+             "o/" 'org-sparse-tree
              "oc" 'org-capture
              "od" 'org-deadline
              "oi" 'org-insert-link-global
@@ -631,10 +633,14 @@ Org-mode settings, comments inline.
     ;; Default file for org-capture and create some templates
     (setq org-default-notes-file "~/notes/n.org"
           org-capture-templates
-          '(("n" "NOTE" entry (file+headline "~/notes/n.org" "Inbox")
+          '(("n" "Note" entry (file+headline "~/notes/n.org" "Inbox")
              "* %?\n %T\n\n %i\n")
             ("c" "Code Snippet" entry (file "~/notes/snippets.org")
              "* %?\t:%^{language}:\n#+BEGIN_SRC %\\1\n%i\n#+END_SRC")
+            ("l" "Log Entry" entry (file+olp+datetree "~/notes/log.org")
+             "* Week %<%V>: %?\n %T\n\n %i\n"
+             :empty-lines 1
+             :tree-type month)
             ("t" "Todo" entry (file+headline "~/notes/n.org" "Agenda")
              "* TODO %?\n %i\n")))
 
