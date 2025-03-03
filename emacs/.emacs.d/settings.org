@@ -30,6 +30,7 @@ The menu bar contents can always be accessed with =<F10>=.
 
 #+begin_src emacs-lisp
   (setq inhibit-startup-screen t)
+  (setq frame-inhibit-implied-resize t)
 
   (setq default-frame-alist '((undecorated . t)))
 
@@ -49,6 +50,8 @@ Highlight current line for programming buffers. Disable cursor blinking, and hig
   (show-paren-mode)
 #+end_src
 
+*** Scrolling
+
 Enable pixel-based scrolling and allow scrolling to "drift" after stopping.
 
 #+begin_src emacs-lisp
@@ -57,6 +60,12 @@ Enable pixel-based scrolling and allow scrolling to "drift" after stopping.
 #+end_src
 
 *** Font
+
+At the expense of memory usage, improve performance on Windows.
+
+#+begin_src emacs-lisp
+  (setq inhibit-compacting-font-caches t)
+#+end_src
 
 Set the default font.
 
@@ -90,10 +99,11 @@ Always use spaces for indent rather than =\t=.
 #+end_src
 
 Use the =<tab>= key to either indent when at the start of a line or
-trigger =completion-at-point=.
+trigger =completion-at-point=. Also, exclude commands not enabled for current mode from completion candidates.
 
 #+begin_src emacs-lisp
   (setq tab-always-indent 'complete)
+  (setq read-extended-command-predicate #'command-completion-default-include-p)
 #+end_src
 
 Cleanup whitespace problems in buffer before saving.
@@ -108,6 +118,16 @@ maintained every time a buffer is opened for a file.
 
 #+begin_src emacs-lisp
   (setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
+#+end_src
+
+** Eglot
+
+Use eglot for lsp. Don't block when connecting to server. Close lsp server when last buffer in the project is killed. And, re-use existing server instance when jumping to definitions.
+
+#+begin_src emacs-lisp
+  (setq eglot-sync-connect 0)
+  (setq eglot-autoshutdown t
+        eglot-extend-to-xref t)
 #+end_src
 
 ** Minibuffer
@@ -161,6 +181,12 @@ Display current pressed prefix and available keys.
   ;; Too slow by default
   (setq which-key-idle-delay 0.2)
   (which-key-mode)
+#+end_src
+
+Increase garbage collection threshold.
+
+#+begin_src emacs-lisp
+  (setq gc-cons-threshold (* 16 1024 1024))
 #+end_src
 
 ** Startup
@@ -222,11 +248,13 @@ Allow hiding minor modes from modeline.
 
 #+begin_src emacs-lisp
   (use-package diminish
-   :ensure t)
+    :ensure t
+    :config (diminish 'visual-line-mode))
+
   (eval-after-load "eldoc"
     '(diminish 'eldoc-mode))
-  (eval-after-load "undo-tree"
-    '(diminish 'undo-tree-mode))
+  (eval-after-load "which-key"
+    '(diminish 'which-key-mode))
 #+end_src
 
 ** Keybindings
@@ -525,6 +553,7 @@ Minimal, focused writing mode.
 #+begin_src emacs-lisp
   (use-package olivetti
     :after org
+    :diminish olivetti-mode
     :hook (org-mode . olivetti-mode)
     :custom (olivetti-body-width 80)
     :general (:states 'normal
@@ -949,6 +978,10 @@ Github copilot suggestions.
              "<backtab>" 'cloud/copilot-or-corfu-previous
              "C-<tab>" 'copilot-accept-completion-by-line)
     :config
+    ;; Disable warnings about indentation and max characters
+    (setq copilot-indent-offset-warning-disable t
+          copilot-max-char-warning-disable t)
+
     (setq evil-complete-next-func 'copilot-complete-next
           evil-complete-previous-func 'copilot-complete-previous))
 #+end_src
