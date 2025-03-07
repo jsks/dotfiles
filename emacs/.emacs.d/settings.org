@@ -960,7 +960,11 @@ Should I be using eglot?
      :general
      (:keymaps 'racket-mode-map
       "C-c C-c" 'racket-send-region
-      "C-c C-r" 'racket-run-module-at-point))
+      "C-c C-r" 'racket-run-module-at-point)
+     (:keymaps 'racket-repl-mode-map
+      "<up>" 'racket-repl-previous-input
+      "<down>" 'racket-repl-next-input))
+
 #+end_src
 
 ** Local Packages
