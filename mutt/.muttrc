@@ -1,9 +1,6 @@
 source ~/.mutt/dev.muttrc
 folder-hook $folder 'source ~/.mutt/dev.muttrc'
 
-source ~/.mutt/gu.muttrc
-folder-hook $folder 'source ~/.mutt/gu.muttrc'
-
 source ~/.mutt/colors.muttrc
 source ~/.mutt/sidebar.muttrc
 
@@ -55,7 +52,6 @@ set index_format = " %D %Z %-20.20F %?M?(+%M)? %s"
 set status_format = "───[ Folder: %f, %m messages%?u?, %u unread?%?d?, %d deleted? ]\
 %?p?──── .: %p waiting to send :. ?──%>─(%P)───"
 folder-hook . 'exec first-entry'
-folder-hook . 'exec collapse-all'
 
 set edit_headers = yes
 set fast_reply = yes
