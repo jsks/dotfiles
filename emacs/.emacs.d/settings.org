@@ -11,13 +11,13 @@
 
 Setting latexpreview on by default absolutely kills emacs since each fragment is generated synchronously.
 
-** TODO Search collapsed headings in org-mode
-
-Currently, '/' in evil-mode is unable to search content beneath collapsed headings in org-mode. See the following github issue [[https://github.com/emacs-evil/evil/issues/1630][#1630]]
-
 ** TODO Treesit and Emacs 30
 
 Is treesit-auto necessary anymore?
+
+** TODO posframe terminal popup
+
+It would be nice to have something like =shell-pop.el=, but in a floating child frame. Getting the popup to appear is easy enough, but unfortunately I think there's some focus selection issues with pgtk/wayland when returning to the parent.
 
 * General Settings
 
@@ -266,6 +266,7 @@ closer to vim.
   (use-package evil
     :init
     (setq evil-search-module 'evil-search)
+    (setq evil-undo-system 'undo-redo)
     (evil-mode t)
     :hook (git-commit-mode . evil-insert-state))
 #+end_src
@@ -306,6 +307,15 @@ General makes defining keybindings easy.
    "bp" 'previous-buffer
    "bR" 'save-revert-buffer
    "bw" 'read-only-mode)
+#+end_src
+
+*** Eglot
+
+#+begin_src emacs-lisp
+  (general-define-key
+   :keymaps 'normal
+   :prefix "SPC"
+   "er" 'eglot-rename)
 #+end_src
 
 *** File Management
@@ -415,12 +425,12 @@ background color.
     (interactive
      (list
       (intern (completing-read "Load custom theme: "
-                               (mapc #'symbol-name (custom-available-themes))))))
+                               (mapcar #'symbol-name (custom-available-themes))))))
     (mapc #'disable-theme custom-enabled-themes)
     (load-theme theme t)
 
     ;; Ensure fringe is always the same color as our buffer bg
-    (set-face-attribute 'fringe nil :background nil))
+    (set-face-attribute 'fringe nil :background 'unspecified))
 
   (general-define-key
    :keymaps 'normal
@@ -788,8 +798,8 @@ Line-mode with eat plays better with evil than vterm.
               "<backtab>" 'eat-line-find-input)
     (:states 'insert
              :keymaps 'eat-line-mode-map
-             "<up>" 'eat-line-previous-input
-             "<down>" 'eat-line-next-input))
+             "<up>" 'eat-line-previous-matching-input-from-input
+             "<down>" 'eat-line-next-matching-input-from-input))
 #+end_src
 
 ** Programming
@@ -805,6 +815,12 @@ Color delimiters according to depth with =rainbow-delimiters-mode=, and highligh
     :hook (prog-mode . highlight-parentheses-mode))
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package editorconfig
+    :config
+    (editorconfig-mode 1))
+#+end_src
+
 
 *** Eldoc
 
@@ -812,7 +828,10 @@ Show eldoc strings in a child frame directly at point.
 
 #+begin_src emacs-lisp
   (use-package eldoc-box
-    :init (eldoc-box-hover-at-point-mode))
+    :init (eldoc-box-hover-at-point-mode)
+    :general (:states 'normal
+              :prefix "SPC"
+              "." 'eldoc-box-help-at-point))
 #+end_src
 
 *** Tree-sitter
@@ -888,6 +907,17 @@ alternatively run =julia --project=<...> <...>/eglot-jl.jl= in a terminal.
      (julia-ts-mode . eglot-jl-init)
      (julia-ts-mode . eglot-ensure))
 
+#+end_src
+
+*** Python
+
+Python essentially works out of the box with =python-ts-mode= mode and eglot
+once =ruff= has been installed.
+
+#+begin_src emacs-lisp
+  (general-define-key
+    :keymaps '(python-mode-map python-ts-mode-map)
+    "C-<return>" 'python-shell-send-statement)
 #+end_src
 
 *** R
