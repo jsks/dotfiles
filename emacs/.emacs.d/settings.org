@@ -915,9 +915,19 @@ Python essentially works out of the box with =python-ts-mode= mode and eglot
 once =ruff= has been installed.
 
 #+begin_src emacs-lisp
-  (general-define-key
-    :keymaps '(python-mode-map python-ts-mode-map)
-    "C-<return>" 'python-shell-send-statement)
+  (add-hook 'python-mode 'eglot-ensure)
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(python-ts-mode . ("ruff" "server"))))
+
+  (setq python-shell-interpreter "uv")
+  (setq python-shell-interpreter-args "run --with ipython --with requests ipython")
+
+  (use-package flymake-ruff
+    :hook (python-ts-mode . flymake-ruff-load))
+
+  (use-package ruff-format
+    :hook (python-ts-mode . ruff-format-on-save-mode))
 #+end_src
 
 *** R
