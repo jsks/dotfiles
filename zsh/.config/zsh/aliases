@@ -10,7 +10,7 @@ alias V="sudo vim"
 
 #-- Simple shell aliases --#
 alias cp="cp -RPv"
-alias grep="grep --color=auto"
+alias grep="grep -i --color=auto"
 alias mkdir="mkdir -p"
 alias mv="mv -i"
 alias rm="rm -iR --one-file-system"
@@ -49,6 +49,7 @@ check bat && alias cat="bat"
 
 # Replace `grep`
 if check rg; then
+    alias rg="rg -i"
     alias rgf="rg -l"
 else
     alias rgf="grep -l"
@@ -68,7 +69,7 @@ alias -s org='o $BROWSER'
 alias -s {png,jpg}='o sxiv'
 alias -s doc='o antiword'
 alias -s pdf='o zathura'
-alias -s {txt,conf,c,go,jl,js,R,py}=$EDITOR
+alias -s {txt,conf,c,go,js,R,py}=$EDITOR
 
 #-- Reload Configs --#
 alias rdot="for i in ~/dotfiles/[a-z]*(/); stow -d ~/dotfiles -R ${i:t}"

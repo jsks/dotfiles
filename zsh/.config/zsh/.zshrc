@@ -23,7 +23,8 @@ setopt autocd autopushd pushdignoredups
 setopt extendedglob globdots nomatch
 
 # History
-setopt appendhistory histfcntllock histignorealldups histnofunctions histreduceblanks sharehistory
+setopt appendhistory extendedhistory histfcntllock histignorealldups
+setopt histnofunctions histreduceblanks sharehistory
 
 # Input/Output
 setopt correct correct_all interactivecomments
@@ -126,5 +127,3 @@ if [[ -n "$EAT_SHELL_INTEGRATION_DIR" ]]; then
 else
     RPROMPT="%{$(echotc UP 1)%}%{$fg[blue]%}%T%{$reset_color%}%{$(echotc DO 1)%}"
 fi
-
-
